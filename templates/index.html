@@ -228,6 +228,33 @@
             </div>
           </div>
         </div>
+
+        <!-- Card Deteksi -->
+        <div class="bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-orange-500/10 mt-8">
+          <h3
+            class="text-xl font-semibold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">
+            Deteksi pada Foto Hasil Perbaikan
+          </h3>
+          <div class="flex flex-wrap gap-4">
+            <button id="detectExpressionBtn"
+              class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium">
+              Deteksi Ekspresi
+            </button>
+            <button id="detectFaceBtn"
+              class="bg-teal-600/80 hover:bg-teal-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium">
+              Deteksi Wajah
+            </button>
+          </div>
+          <div class="mt-6">
+            <canvas id="detectionCanvas" class="w-full rounded-lg border border-orange-400" style="
+                  max-width: 100%;
+                  max-height: 500px;
+                  min-height: 250px;
+                  display: block;
+                  margin: auto;
+                "></canvas>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -262,41 +289,45 @@
 
   <script>
     // DOM Elements
-    const imageUpload = document.getElementById('imageUpload');
-    const originalImage = document.getElementById('originalImage');
-    const processedImage = document.getElementById('processedImage');
-    const originalPlaceholder = document.getElementById('originalPlaceholder');
-    const processedPlaceholder = document.getElementById('processedPlaceholder');
+    const imageUpload = document.getElementById("imageUpload");
+    const originalImage = document.getElementById("originalImage");
+    const processedImage = document.getElementById("processedImage");
+    const originalPlaceholder = document.getElementById(
+      "originalPlaceholder"
+    );
+    const processedPlaceholder = document.getElementById(
+      "processedPlaceholder"
+    );
 
     // Filter buttons
-    const grayscaleBtn = document.getElementById('grayscaleBtn');
-    const binerBtn = document.getElementById('binerBtn');
-    const gaussianBtn = document.getElementById('gaussianBtn');
-    const histogramBtn = document.getElementById('histogramBtn');
+    const grayscaleBtn = document.getElementById("grayscaleBtn");
+    const binerBtn = document.getElementById("binerBtn");
+    const gaussianBtn = document.getElementById("gaussianBtn");
+    const histogramBtn = document.getElementById("histogramBtn");
 
     // Adjustment sliders
-    const brightnessSlider = document.getElementById('brightness');
-    const contrastSlider = document.getElementById('contrast');
-    const sharpeningSlider = document.getElementById('sharpening');
-    const saturationSlider = document.getElementById('saturation');
-    const hueSlider = document.getElementById('hue');
-    const valueSlider = document.getElementById('value');
+    const brightnessSlider = document.getElementById("brightness");
+    const contrastSlider = document.getElementById("contrast");
+    const sharpeningSlider = document.getElementById("sharpening");
+    const saturationSlider = document.getElementById("saturation");
+    const hueSlider = document.getElementById("hue");
+    const valueSlider = document.getElementById("value");
 
     // Action buttons
-    const undoBtn = document.getElementById('undoBtn');
-    const redoBtn = document.getElementById('redoBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const saveExcelBtn = document.getElementById('saveExcelBtn');
-    const saveTextBtn = document.getElementById('saveTextBtn');
-    const saveImageBtn = document.getElementById('saveImageBtn');
+    const undoBtn = document.getElementById("undoBtn");
+    const redoBtn = document.getElementById("redoBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const saveExcelBtn = document.getElementById("saveExcelBtn");
+    const saveTextBtn = document.getElementById("saveTextBtn");
+    const saveImageBtn = document.getElementById("saveImageBtn");
 
     // Slider value displays
-    const brightnessValue = document.getElementById('brightnessValue');
-    const contrastValue = document.getElementById('contrastValue');
-    const sharpeningValue = document.getElementById('sharpeningValue');
-    const saturationValue = document.getElementById('saturationValue');
-    const hueValue = document.getElementById('hueValue');
-    const valueValue = document.getElementById('valueValue');
+    const brightnessValue = document.getElementById("brightnessValue");
+    const contrastValue = document.getElementById("contrastValue");
+    const sharpeningValue = document.getElementById("sharpeningValue");
+    const saturationValue = document.getElementById("saturationValue");
+    const hueValue = document.getElementById("hueValue");
+    const valueValue = document.getElementById("valueValue");
 
     // Histogram Modal Elements
     const histogramModal = document.getElementById('histogramModal');
@@ -308,30 +339,33 @@
 
     // Improved Modal Functions
     function openHistogramModal() {
-      histogramModal.classList.remove('hidden');
-      document.body.classList.add('overflow-hidden');
+      histogramModal.classList.remove("hidden");
+      document.body.classList.add("overflow-hidden");
 
       // Add animation
-      histogramModal.classList.remove('opacity-0');
-      histogramModal.classList.add('opacity-100');
+      histogramModal.classList.remove("opacity-0");
+      histogramModal.classList.add("opacity-100");
     }
 
     function closeHistModal() {
       // Add animation
-      histogramModal.classList.remove('opacity-100');
-      histogramModal.classList.add('opacity-0');
+      histogramModal.classList.remove("opacity-100");
+      histogramModal.classList.add("opacity-0");
 
       setTimeout(() => {
-        histogramModal.classList.add('hidden');
-        document.body.classList.remove('overflow-hidden');
+        histogramModal.classList.add("hidden");
+        document.body.classList.remove("overflow-hidden");
       }, 300);
     }
 
     // Close modal handlers
-    closeHistogramModal.addEventListener('click', closeHistModal);
+    closeHistogramModal.addEventListener("click", closeHistModal);
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !histogramModal.classList.contains('hidden')) {
+    document.addEventListener("keydown", (e) => {
+      if (
+        e.key === "Escape" &&
+        !histogramModal.classList.contains("hidden")
+      ) {
         closeHistModal();
       }
     });
@@ -340,62 +374,62 @@
     let currentImageUrl = null;
 
     // Reset state saat halaman dimuat
-    window.addEventListener('load', () => {
+    window.addEventListener("load", () => {
       // Reset semua tampilan gambar
-      originalImage.src = '';
-      processedImage.src = '';
-      originalImage.classList.add('hidden');
-      processedImage.classList.add('hidden');
-      originalPlaceholder.classList.remove('hidden');
-      processedPlaceholder.classList.remove('hidden');
+      originalImage.src = "";
+      processedImage.src = "";
+      originalImage.classList.add("hidden");
+      processedImage.classList.add("hidden");
+      originalPlaceholder.classList.remove("hidden");
+      processedPlaceholder.classList.remove("hidden");
 
       // Reset slider values
       resetSliders();
     });
 
     // Event listeners for sliders to update their display values
-    brightnessSlider.addEventListener('input', () => {
+    brightnessSlider.addEventListener("input", () => {
       brightnessValue.textContent = brightnessSlider.value;
       applyAdjustments();
     });
 
-    contrastSlider.addEventListener('input', () => {
+    contrastSlider.addEventListener("input", () => {
       contrastValue.textContent = contrastSlider.value;
       applyAdjustments();
     });
 
-    sharpeningSlider.addEventListener('input', () => {
+    sharpeningSlider.addEventListener("input", () => {
       sharpeningValue.textContent = sharpeningSlider.value;
       applyAdjustments();
     });
 
-    saturationSlider.addEventListener('input', () => {
+    saturationSlider.addEventListener("input", () => {
       saturationValue.textContent = saturationSlider.value;
       applyAdjustments();
     });
 
-    hueSlider.addEventListener('input', () => {
+    hueSlider.addEventListener("input", () => {
       hueValue.textContent = hueSlider.value;
       applyAdjustments();
     });
 
-    valueSlider.addEventListener('input', () => {
+    valueSlider.addEventListener("input", () => {
       valueValue.textContent = valueSlider.value;
       applyAdjustments();
     });
 
     // Image upload handler
-    imageUpload.addEventListener('change', async (event) => {
+    imageUpload.addEventListener("change", async (event) => {
       const file = event.target.files[0];
       if (!file) return;
 
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append("file", file);
 
       try {
-        const response = await fetch('/load_image', {
-          method: 'POST',
-          body: formData
+        const response = await fetch("/load_image", {
+          method: "POST",
+          body: formData,
         });
 
         if (response.ok) {
@@ -404,23 +438,23 @@
           // Use the returned URL to display the image
           originalImage.src = data.image_url;
           processedImage.src = data.image_url;
-          originalImage.classList.remove('hidden');
-          processedImage.classList.remove('hidden');
-          originalPlaceholder.classList.add('hidden');
-          processedPlaceholder.classList.add('hidden');
+          originalImage.classList.remove("hidden");
+          processedImage.classList.remove("hidden");
+          originalPlaceholder.classList.add("hidden");
+          processedPlaceholder.classList.add("hidden");
 
           // Reset sliders to default values
           resetSliders();
 
-          console.log('Image loaded successfully');
+          console.log("Image loaded successfully");
         } else {
           const error = await response.json();
-          console.error('Error loading image:', error.error);
-          alert('Failed to load image: ' + error.error);
+          console.error("Error loading image:", error.error);
+          alert("Failed to load image: " + error.error);
         }
       } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while loading the image');
+        console.error("Error:", error);
+        alert("An error occurred while loading the image");
       }
     });
 
@@ -432,96 +466,96 @@
       hueSlider.value = 0;
       valueSlider.value = 100;
 
-      brightnessValue.textContent = '0';
-      contrastValue.textContent = '100';
-      sharpeningValue.textContent = '0';
-      saturationValue.textContent = '100';
-      hueValue.textContent = '0';
-      valueValue.textContent = '100';
+      brightnessValue.textContent = "0";
+      contrastValue.textContent = "100";
+      sharpeningValue.textContent = "0";
+      saturationValue.textContent = "100";
+      hueValue.textContent = "0";
+      valueValue.textContent = "100";
     }
 
     // Filter buttons
-    grayscaleBtn.addEventListener('click', async () => {
+    grayscaleBtn.addEventListener("click", async () => {
       try {
-        const response = await fetch('/grayscale', {
-          method: 'GET'
+        const response = await fetch("/grayscale", {
+          method: "GET",
         });
 
         if (response.ok) {
           const blob = await response.blob();
           const url = URL.createObjectURL(blob);
           processedImage.src = url;
-          console.log('Grayscale filter applied');
+          console.log("Grayscale filter applied");
         } else {
           const error = await response.json();
-          console.error('Error applying grayscale:', error.error);
-          alert('Failed to apply grayscale: ' + error.error);
+          console.error("Error applying grayscale:", error.error);
+          alert("Failed to apply grayscale: " + error.error);
         }
       } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while applying grayscale');
+        console.error("Error:", error);
+        alert("An error occurred while applying grayscale");
       }
     });
 
-    binerBtn.addEventListener('click', async () => {
+    binerBtn.addEventListener("click", async () => {
       try {
-        const response = await fetch('/biner', {
-          method: 'GET'
+        const response = await fetch("/biner", {
+          method: "GET",
         });
 
         if (response.ok) {
           const blob = await response.blob();
           const url = URL.createObjectURL(blob);
           processedImage.src = url;
-          console.log('Biner filter applied');
+          console.log("Biner filter applied");
         } else {
           const error = await response.json();
-          console.error('Error applying biner:', error.error);
-          alert('Failed to apply biner: ' + error.error);
+          console.error("Error applying biner:", error.error);
+          alert("Failed to apply biner: " + error.error);
         }
       } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while applying biner');
+        console.error("Error:", error);
+        alert("An error occurred while applying biner");
       }
     });
 
-    gaussianBtn.addEventListener('click', async () => {
+    gaussianBtn.addEventListener("click", async () => {
       try {
-        const response = await fetch('/gaussian_filter', {
-          method: 'GET'
+        const response = await fetch("/gaussian_filter", {
+          method: "GET",
         });
 
         if (response.ok) {
           const blob = await response.blob();
           const url = URL.createObjectURL(blob);
           processedImage.src = url;
-          console.log('Gaussian filter applied');
+          console.log("Gaussian filter applied");
         } else {
           const error = await response.json();
-          console.error('Error applying gaussian:', error.error);
-          alert('Failed to apply gaussian: ' + error.error);
+          console.error("Error applying gaussian:", error.error);
+          alert("Failed to apply gaussian: " + error.error);
         }
       } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while applying gaussian');
+        console.error("Error:", error);
+        alert("An error occurred while applying gaussian");
       }
     });
 
-    histogramBtn.addEventListener('click', async () => {
+    histogramBtn.addEventListener("click", async () => {
       try {
-        const response = await fetch('/histogram_equalization', {
-          method: 'GET'
+        const response = await fetch("/histogram_equalization", {
+          method: "GET",
         });
 
         if (response.ok) {
           const blob = await response.blob();
           const url = URL.createObjectURL(blob);
           processedImage.src = url;
-          console.log('Histogram equalization applied');
+          console.log("Histogram equalization applied");
 
           // Show histogram in modal instead of new window
-          const histResponse = await fetch('/show_histogram', {
-            method: 'GET'
+          const histResponse = await fetch("/show_histogram", {
+            method: "GET",
           });
 
           if (histResponse.ok) {
@@ -529,7 +563,7 @@
             const histUrl = URL.createObjectURL(histBlob);
 
             // Set the image source and show modal
-            const histogramImage = document.getElementById('histogramImage');
+            const histogramImage = document.getElementById("histogramImage");
             histogramImage.src = histUrl;
 
             const histogramModal = document.getElementById('histogramModal');
@@ -613,54 +647,54 @@
     });
 
     // Action buttons
-    undoBtn.addEventListener('click', async () => {
+    undoBtn.addEventListener("click", async () => {
       try {
-        const response = await fetch('/undo', {
-          method: 'GET'
+        const response = await fetch("/undo", {
+          method: "GET",
         });
 
         if (response.ok) {
           const blob = await response.blob();
           const url = URL.createObjectURL(blob);
           processedImage.src = url;
-          console.log('Undo action performed');
+          console.log("Undo action performed");
         } else {
           const error = await response.json();
-          console.error('Error undoing:', error.error);
-          alert('Failed to undo: ' + error.error);
+          console.error("Error undoing:", error.error);
+          alert("Failed to undo: " + error.error);
         }
       } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while undoing');
+        console.error("Error:", error);
+        alert("An error occurred while undoing");
       }
     });
 
-    redoBtn.addEventListener('click', async () => {
+    redoBtn.addEventListener("click", async () => {
       try {
-        const response = await fetch('/redo', {
-          method: 'GET'
+        const response = await fetch("/redo", {
+          method: "GET",
         });
 
         if (response.ok) {
           const blob = await response.blob();
           const url = URL.createObjectURL(blob);
           processedImage.src = url;
-          console.log('Redo action performed');
+          console.log("Redo action performed");
         } else {
           const error = await response.json();
-          console.error('Error redoing:', error.error);
-          alert('Failed to redo: ' + error.error);
+          console.error("Error redoing:", error.error);
+          alert("Failed to redo: " + error.error);
         }
       } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while redoing');
+        console.error("Error:", error);
+        alert("An error occurred while redoing");
       }
     });
 
-    resetBtn.addEventListener('click', async () => {
+    resetBtn.addEventListener("click", async () => {
       try {
-        const response = await fetch('/reset_image', {
-          method: 'GET'
+        const response = await fetch("/reset_image", {
+          method: "GET",
         });
 
         if (response.ok) {
@@ -676,103 +710,103 @@
           hueSlider.value = 0;
           valueSlider.value = 100;
 
-          brightnessValue.textContent = '0';
-          contrastValue.textContent = '100';
-          sharpeningValue.textContent = '0';
-          saturationValue.textContent = '100';
-          hueValue.textContent = '0';
-          valueValue.textContent = '100';
+          brightnessValue.textContent = "0";
+          contrastValue.textContent = "100";
+          sharpeningValue.textContent = "0";
+          saturationValue.textContent = "100";
+          hueValue.textContent = "0";
+          valueValue.textContent = "100";
 
-          console.log('Image reset to original');
+          console.log("Image reset to original");
         } else {
           const error = await response.json();
-          console.error('Error resetting image:', error.error);
-          alert('Failed to reset image: ' + error.error);
+          console.error("Error resetting image:", error.error);
+          alert("Failed to reset image: " + error.error);
         }
       } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while resetting the image');
+        console.error("Error:", error);
+        alert("An error occurred while resetting the image");
       }
     });
 
-    saveExcelBtn.addEventListener('click', async () => {
+    saveExcelBtn.addEventListener("click", async () => {
       try {
-        const response = await fetch('/save_edited_pixels_excel', {
-          method: 'GET'
+        const response = await fetch("/save_edited_pixels_excel", {
+          method: "GET",
         });
 
         if (response.ok) {
           const blob = await response.blob();
           const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
+          const a = document.createElement("a");
           a.href = url;
-          a.download = 'edited_pixels.xlsx';
+          a.download = "edited_pixels.xlsx";
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-          console.log('Excel file downloaded');
+          console.log("Excel file downloaded");
         } else {
           const error = await response.json();
-          console.error('Error saving to Excel:', error.error);
-          alert('Failed to save to Excel: ' + error.error);
+          console.error("Error saving to Excel:", error.error);
+          alert("Failed to save to Excel: " + error.error);
         }
       } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while saving to Excel');
+        console.error("Error:", error);
+        alert("An error occurred while saving to Excel");
       }
     });
 
-    saveTextBtn.addEventListener('click', async () => {
+    saveTextBtn.addEventListener("click", async () => {
       try {
-        const response = await fetch('/save_edited_pixels_text', {
-          method: 'GET'
+        const response = await fetch("/save_edited_pixels_text", {
+          method: "GET",
         });
 
         if (response.ok) {
           const blob = await response.blob();
           const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
+          const a = document.createElement("a");
           a.href = url;
-          a.download = 'edited_pixels.txt';
+          a.download = "edited_pixels.txt";
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-          console.log('Text file downloaded');
+          console.log("Text file downloaded");
         } else {
           const error = await response.json();
-          console.error('Error saving to text:', error.error);
-          alert('Failed to save to text: ' + error.error);
+          console.error("Error saving to text:", error.error);
+          alert("Failed to save to text: " + error.error);
         }
       } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while saving to text');
+        console.error("Error:", error);
+        alert("An error occurred while saving to text");
       }
     });
 
-    saveImageBtn.addEventListener('click', async () => {
+    saveImageBtn.addEventListener("click", async () => {
       try {
-        const response = await fetch('/save_image', {
-          method: 'GET'
+        const response = await fetch("/save_image", {
+          method: "GET",
         });
 
         if (response.ok) {
           const blob = await response.blob();
           const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
+          const a = document.createElement("a");
           a.href = url;
-          a.download = 'processed_image.png';
+          a.download = "processed_image.png";
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-          console.log('Image downloaded');
+          console.log("Image downloaded");
         } else {
           const error = await response.json();
-          console.error('Error saving image:', error.error);
-          alert('Failed to save image: ' + error.error);
+          console.error("Error saving image:", error.error);
+          alert("Failed to save image: " + error.error);
         }
       } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while saving the image');
+        console.error("Error:", error);
+        alert("An error occurred while saving the image");
       }
     });
 
@@ -784,16 +818,16 @@
         sharpening: parseInt(sharpeningSlider.value),
         saturation: parseInt(saturationSlider.value),
         hue_shift: parseInt(hueSlider.value),
-        value_scale: parseInt(valueSlider.value)
+        value_scale: parseInt(valueSlider.value),
       };
 
       try {
-        const response = await fetch('/adjust_image', {
-          method: 'POST',
+        const response = await fetch("/adjust_image", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(adjustments)
+          body: JSON.stringify(adjustments),
         });
 
         if (response.ok) {
@@ -802,10 +836,10 @@
           processedImage.src = url;
         } else {
           const error = await response.json();
-          console.error('Error adjusting image:', error.error);
+          console.error("Error adjusting image:", error.error);
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     }
 
@@ -826,12 +860,61 @@
     const debouncedAdjustments = debounce(applyAdjustments, 300);
 
     // Add event listeners with debouncing
-    brightnessSlider.addEventListener('input', debouncedAdjustments);
-    contrastSlider.addEventListener('input', debouncedAdjustments);
-    sharpeningSlider.addEventListener('input', debouncedAdjustments);
-    saturationSlider.addEventListener('input', debouncedAdjustments);
-    hueSlider.addEventListener('input', debouncedAdjustments);
-    valueSlider.addEventListener('input', debouncedAdjustments);
+    brightnessSlider.addEventListener("input", debouncedAdjustments);
+    contrastSlider.addEventListener("input", debouncedAdjustments);
+    sharpeningSlider.addEventListener("input", debouncedAdjustments);
+    saturationSlider.addEventListener("input", debouncedAdjustments);
+    hueSlider.addEventListener("input", debouncedAdjustments);
+    valueSlider.addEventListener("input", debouncedAdjustments);
+
+    const detectionCanvas = document.getElementById("detectionCanvas");
+    const detectFaceBtn = document.getElementById("detectFaceBtn");
+
+    // Helper: tampilkan hasil deteksi pada canvas, dengan scaling proporsional agar tidak melebihi card
+    function showDetectionOnCanvas(imageBlob) {
+      const url = URL.createObjectURL(imageBlob);
+      const img = new window.Image();
+      img.onload = function () {
+        // Ukuran maksimal card (perbesar maxHeight agar gambar lebih besar)
+        const maxWidth = detectionCanvas.parentElement.offsetWidth || 700;
+        const maxHeight = 500; // sebelumnya 350
+        let drawWidth = img.width;
+        let drawHeight = img.height;
+        const scale = Math.min(
+          maxWidth / img.width,
+          maxHeight / img.height,
+          1
+        );
+        if (scale < 1) {
+          drawWidth = img.width * scale;
+          drawHeight = img.height * scale;
+        }
+        detectionCanvas.width = drawWidth;
+        detectionCanvas.height = drawHeight;
+        detectionCanvas.style.width = drawWidth + "px";
+        detectionCanvas.style.height = drawHeight + "px";
+        const ctx = detectionCanvas.getContext("2d");
+        ctx.clearRect(0, 0, detectionCanvas.width, detectionCanvas.height);
+        ctx.drawImage(img, 0, 0, drawWidth, drawHeight);
+        URL.revokeObjectURL(url);
+      };
+      img.src = url;
+    }
+
+    detectFaceBtn.addEventListener("click", async () => {
+      try {
+        const response = await fetch("/detect_face", { method: "GET" });
+        if (response.ok) {
+          const blob = await response.blob();
+          showDetectionOnCanvas(blob);
+        } else {
+          const error = await response.json();
+          alert("Gagal deteksi wajah: " + error.error);
+        }
+      } catch (e) {
+        alert("Terjadi kesalahan saat deteksi wajah");
+      }
+    });
   </script>
 </body>
 
