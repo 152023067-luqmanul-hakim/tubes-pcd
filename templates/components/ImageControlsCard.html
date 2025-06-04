@@ -1,0 +1,158 @@
+<div class="bg-black/30 backdrop-blur-sm rounded-xl p-6">
+  <div class="grid grid-cols-2 gap-4 mb-6">
+    <!-- Left side buttons -->
+    <div class="flex flex-col gap-2">
+      <button
+        class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors"
+      >
+        Gaussian
+      </button>
+      <button
+        class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors"
+      >
+        Biner
+      </button>
+      <button
+        class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors"
+      >
+        Greyscale
+      </button>
+      <button
+        class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors"
+      >
+        Object Detection
+      </button>
+    </div>
+    <!-- Right side buttons -->
+    <div class="flex flex-col gap-2">
+      <button
+        class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors"
+      >
+        Equalization
+      </button>
+      <button
+        class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg transition-colors"
+      >
+        Histogram
+      </button>
+    </div>
+  </div>
+
+  <!-- Sliders Section -->
+  <div class="grid grid-cols-3 gap-4">
+    <div class="space-y-4">
+      <div class="space-y-2">
+        <label class="text-emerald-300 text-sm">Brightness</label>
+        <input
+          type="range"
+          id="brightness"
+          min="-100"
+          max="100"
+          value="0"
+          class="w-full accent-emerald-500"
+        />
+        <span id="brightnessValue" class="text-xs text-emerald-300">0</span>
+      </div>
+      <div class="space-y-2">
+        <label class="text-emerald-300 text-sm">Contrast</label>
+        <input
+          type="range"
+          id="contrast"
+          min="0"
+          max="200"
+          value="100"
+          class="w-full accent-emerald-500"
+        />
+        <span id="contrastValue" class="text-xs text-emerald-300">100</span>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <div class="space-y-2">
+        <label class="text-emerald-300 text-sm">Sharpening</label>
+        <input
+          type="range"
+          id="sharpening"
+          min="0"
+          max="10"
+          value="0"
+          class="w-full accent-emerald-500"
+        />
+        <span id="sharpeningValue" class="text-xs text-emerald-300">0</span>
+      </div>
+      <div class="space-y-2">
+        <label class="text-emerald-300 text-sm">Saturation</label>
+        <input
+          type="range"
+          id="saturation"
+          min="0"
+          max="200"
+          value="100"
+          class="w-full accent-emerald-500"
+        />
+        <span id="saturationValue" class="text-xs text-emerald-300">100</span>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <div class="space-y-2">
+        <label class="text-emerald-300 text-sm">Hue</label>
+        <input
+          type="range"
+          id="hue"
+          min="-180"
+          max="180"
+          value="0"
+          class="w-full accent-emerald-500"
+        />
+        <span id="hueValue" class="text-xs text-emerald-300">0</span>
+      </div>
+      <div class="space-y-2">
+        <label class="text-emerald-300 text-sm">Value</label>
+        <input
+          type="range"
+          id="value"
+          min="0"
+          max="200"
+          value="100"
+          class="w-full accent-emerald-500"
+        />
+        <span id="valueValue" class="text-xs text-emerald-300">100</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex justify-end gap-2 mt-6">
+    <button
+      class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+    >
+      Undo
+    </button>
+    <button
+      class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+    >
+      Redo
+    </button>
+    <button
+      class="bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2 rounded-lg transition-colors"
+    >
+      Reset
+    </button>
+  </div>
+
+  <!-- Save Options -->
+  <div class="mt-4 flex justify-end items-center gap-4">
+    <span class="text-emerald-300">Simpan Piksel:</span>
+    <button
+      class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors"
+    >
+      .xlsx
+    </button>
+    <button
+      class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-colors"
+    >
+      .txt
+    </button>
+  </div>
+</div>
