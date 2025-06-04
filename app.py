@@ -103,9 +103,9 @@ def reset_image():
 
 @app.route('/grayscale', methods=['GET'])
 def grayscale():
-    global filtered_image, history, redo_stack
+    global original_image, filtered_image, history, redo_stack
     
-    if filtered_image is None:
+    if original_image or filtered_image is None:
         return jsonify({'error': 'No image available'}), 400
     
     gray = cv2.cvtColor(filtered_image, cv2.COLOR_BGR2GRAY)
@@ -117,9 +117,9 @@ def grayscale():
 
 @app.route('/biner', methods=['GET'])
 def biner():
-    global filtered_image, history, redo_stack
+    global original_image, filtered_image, history, redo_stack
     
-    if filtered_image is None:
+    if original_image or filtered_image is None:
         return jsonify({'error': 'No image available'}), 400
     
     gray = cv2.cvtColor(filtered_image, cv2.COLOR_BGR2GRAY)
@@ -132,9 +132,9 @@ def biner():
 
 @app.route('/gaussian_filter', methods=['GET'])
 def gaussian_filter():
-    global filtered_image, history, redo_stack
+    global original_image, filtered_image, history, redo_stack
     
-    if filtered_image is None:
+    if original_image or filtered_image is None:
         return jsonify({'error': 'No image available'}), 400
     
     kernel_size = 3
@@ -151,9 +151,9 @@ def gaussian_filter():
 
 @app.route('/histogram_equalization', methods=['GET'])
 def histogram_equalization():
-    global filtered_image, history, redo_stack
+    global original_image,  filtered_image, history, redo_stack
     
-    if filtered_image is None:
+    if original_image or filtered_image is None:
         return jsonify({'error': 'No image available'}), 400
     
     hist, bins = np.histogram(filtered_image.flatten(), 256, [0, 256]) 
@@ -166,25 +166,25 @@ def histogram_equalization():
     history.append(filtered_image.copy())
     redo_stack = []
     
-    # Create and return histogram plot
-    plt.figure()
-    plt.plot(cdf_normalized, color='b')
-    plt.hist(filtered_image.flatten(), 256, [0, 256], color='r')
-    plt.xlim([0, 256])
-    plt.legend(('cdf', 'histogram'), loc='upper left')
+    # # Create and return histogram plot
+    # plt.figure()
+    # plt.plot(cdf_normalized, color='b')
+    # plt.hist(filtered_image.flatten(), 256, [0, 256], color='r')
+    # plt.xlim([0, 256])
+    # plt.legend(('cdf', 'histogram'), loc='upper left')
     
-    buf = io.BytesIO()
-    plt.savefig(buf, format='png')
-    buf.seek(0)
-    plt.close()
+    # buf = io.BytesIO()
+    # plt.savefig(buf, format='png')
+    # buf.seek(0)
+    # plt.close()
     
-    return send_file(buf, mimetype='image/png')
+    return save_image_to_response(filtered_image)
 
 @app.route('/show_histogram', methods=['GET'])
 def show_histogram():
-    global filtered_image
+    global original_image, filtered_image
     
-    if filtered_image is None:
+    if filtered_image or original_image is None:
         return jsonify({'error': 'No image available'}), 400
     
     plt.figure()
