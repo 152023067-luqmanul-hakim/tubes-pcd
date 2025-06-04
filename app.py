@@ -689,7 +689,7 @@ def detect_face():
         return jsonify({'error': 'No image available'}), 400
 
     # Load haarcascade for face
-    cascade_path = os.path.join(os.path.dirname(__file__), "haarcascade_frontalface_default.xml")
+    cascade_path = os.path.join(app.root_path, 'static', 'models', 'haarcascade_frontalface_default.xml')
     face_cascade = cv2.CascadeClassifier(cascade_path)
     img = filtered_image.copy()
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)

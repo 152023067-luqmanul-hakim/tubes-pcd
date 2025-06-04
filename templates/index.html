@@ -80,11 +80,13 @@
     <div class="absolute inset-0 bg-gradient-to-b from-transparent via-gray-950/50 to-gray-950"></div>
     <div class="z-10 text-center px-4 max-w-3xl mx-auto">
       <h1
-        class="text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-500">
+        class="text-7xl font-bold mb-6 pb-3 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-500">
         Selamat Datang
       </h1>
       <p class="text-2xl text-orange-200 mb-12 leading-relaxed">
-        Perbaiki foto lama Anda dengan bantuan teknologi AI
+        Dari Buram Menjadi Berbinar. Kami tak hanya memperbaiki kualitas foto
+        lama Anda, tapi juga secara otomatis mendeteksi dan menandai
+        orang-orang dalam gambar.
       </p>
       <a href="#main-content"
         class="inline-block bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white px-10 py-4 rounded-xl transition-all transform hover:scale-105 shadow-lg shadow-orange-500/20 text-lg font-medium">
@@ -129,10 +131,6 @@
                 class="text-2xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">
                 Foto Hasil Perbaikan
               </h3>
-              <button id="detectExpressionBtn"
-                class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg cursor-pointer transition-colors">
-                Deteksi Ekspresi
-              </button>
             </div>
             <div class="aspect-video bg-gray-950 rounded-xl overflow-hidden border border-orange-500/10 shadow-inner">
               <img id="processedImage" src="" alt="Foto Hasil Perbaikan" class="w-full h-full object-contain hidden" />
@@ -273,15 +271,20 @@
               class="bg-teal-600/80 hover:bg-teal-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium">
               Deteksi Wajah
             </button>
+            <button id="clearDetectionBtn"
+              class="bg-red-600/80 hover:bg-red-700 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium">
+              Hapus
+            </button>
           </div>
           <div class="mt-6">
-            <canvas id="detectionCanvas" class="w-full rounded-lg border border-orange-400" style="
-                  max-width: 100%;
-                  max-height: 500px;
-                  min-height: 250px;
-                  display: block;
-                  margin: auto;
-                "></canvas>
+            <!-- Ganti canvas dengan card gambar hasil deteksi -->
+            <div
+              class="aspect-video bg-gray-950 rounded-xl overflow-hidden border border-orange-400 shadow-inner flex items-center justify-center">
+              <img id="detectionImage" src="" alt="Hasil Deteksi" class="w-full h-full object-contain hidden" />
+              <div id="detectionPlaceholder" class="w-full h-full flex items-center justify-center text-gray-500">
+                Hasil deteksi akan muncul di sini
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -359,12 +362,16 @@
     const valueValue = document.getElementById("valueValue");
 
     // Histogram Modal Elements
-    const histogramModal = document.getElementById('histogramModal');
-    const closeHistogramModal = document.getElementById('closeHistogramModal');
-    const histogramImage = document.getElementById('histogramImage');
+    const histogramModal = document.getElementById("histogramModal");
+    const closeHistogramModal = document.getElementById(
+      "closeHistogramModal"
+    );
+    const histogramImage = document.getElementById("histogramImage");
 
     //deteksi ekspresi
-    const detectExpressionBtn = document.getElementById('detectExpressionBtn');
+    const detectExpressionBtn = document.getElementById(
+      "detectExpressionBtn"
+    );
 
     // Improved Modal Functions
     function openHistogramModal() {
@@ -687,11 +694,11 @@
         detectExpressionBtn.innerHTML = '<span class="loading">Memproses...</span>';
 
         const formData = new FormData();
-        formData.append('file', imageUpload.files[0]);
+        formData.append("file", imageUpload.files[0]);
 
-        const response = await fetch('/detect_expression', {
-          method: 'POST',
-          body: formData
+        const response = await fetch("/detect_expression", {
+          method: "POST",
+          body: formData,
         });
 
         if (response.ok) {
@@ -1017,38 +1024,22 @@
     hueSlider.addEventListener("input", debouncedAdjustments);
     valueSlider.addEventListener("input", debouncedAdjustments);
 
-    const detectionCanvas = document.getElementById("detectionCanvas");
+    // Hapus canvas detection, ganti dengan img
+    const detectionImage = document.getElementById("detectionImage");
+    const detectionPlaceholder = document.getElementById(
+      "detectionPlaceholder"
+    );
     const detectFaceBtn = document.getElementById("detectFaceBtn");
+    const clearDetectionBtn = document.getElementById("clearDetectionBtn");
 
-    // Helper: tampilkan hasil deteksi pada canvas, dengan scaling proporsional agar tidak melebihi card
-    function showDetectionOnCanvas(imageBlob) {
+    // Helper: tampilkan hasil deteksi pada card gambar
+    function showDetectionImage(imageBlob) {
       const url = URL.createObjectURL(imageBlob);
-      const img = new window.Image();
-      img.onload = function () {
-        // Ukuran maksimal card (perbesar maxHeight agar gambar lebih besar)
-        const maxWidth = detectionCanvas.parentElement.offsetWidth || 700;
-        const maxHeight = 500; // sebelumnya 350
-        let drawWidth = img.width;
-        let drawHeight = img.height;
-        const scale = Math.min(
-          maxWidth / img.width,
-          maxHeight / img.height,
-          1
-        );
-        if (scale < 1) {
-          drawWidth = img.width * scale;
-          drawHeight = img.height * scale;
-        }
-        detectionCanvas.width = drawWidth;
-        detectionCanvas.height = drawHeight;
-        detectionCanvas.style.width = drawWidth + "px";
-        detectionCanvas.style.height = drawHeight + "px";
-        const ctx = detectionCanvas.getContext("2d");
-        ctx.clearRect(0, 0, detectionCanvas.width, detectionCanvas.height);
-        ctx.drawImage(img, 0, 0, drawWidth, drawHeight);
-        URL.revokeObjectURL(url);
-      };
-      img.src = url;
+      detectionImage.src = url;
+      detectionImage.classList.remove("hidden");
+      detectionPlaceholder.classList.add("hidden");
+      // Revoke URL after image loads to free memory
+      detectionImage.onload = () => URL.revokeObjectURL(url);
     }
 
     detectFaceBtn.addEventListener("click", async () => {
@@ -1056,7 +1047,7 @@
         const response = await fetch("/detect_face", { method: "GET" });
         if (response.ok) {
           const blob = await response.blob();
-          showDetectionOnCanvas(blob);
+          showDetectionImage(blob);
         } else {
           const error = await response.json();
           alert("Gagal deteksi wajah: " + error.error);
@@ -1064,6 +1055,12 @@
       } catch (e) {
         alert("Terjadi kesalahan saat deteksi wajah");
       }
+    });
+
+    clearDetectionBtn.addEventListener("click", () => {
+      detectionImage.src = "";
+      detectionImage.classList.add("hidden");
+      detectionPlaceholder.classList.remove("hidden");
     });
   </script>
 </body>
