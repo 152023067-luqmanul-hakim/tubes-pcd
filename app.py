@@ -104,39 +104,39 @@ def reset_image():
 @app.route('/grayscale', methods=['GET'])
 def grayscale():
     global original_image, filtered_image, history, redo_stack
-    
-    if original_image or filtered_image is None:
+
+    if original_image is None or filtered_image is None:
         return jsonify({'error': 'No image available'}), 400
-    
+
     gray = cv2.cvtColor(filtered_image, cv2.COLOR_BGR2GRAY)
     filtered_image = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
     history.append(filtered_image.copy())
     redo_stack = []
-    
+
     return save_image_to_response(filtered_image)
 
 @app.route('/biner', methods=['GET'])
 def biner():
     global original_image, filtered_image, history, redo_stack
-    
-    if original_image or filtered_image is None:
+
+    if original_image is None or filtered_image is None:
         return jsonify({'error': 'No image available'}), 400
-    
+
     gray = cv2.cvtColor(filtered_image, cv2.COLOR_BGR2GRAY)
     _, binary = cv2.threshold(gray, 180, 255, cv2.THRESH_BINARY)
     filtered_image = cv2.cvtColor(binary, cv2.COLOR_GRAY2BGR)
     history.append(filtered_image.copy())
     redo_stack = []
-    
+
     return save_image_to_response(filtered_image)
 
 @app.route('/gaussian_filter', methods=['GET'])
 def gaussian_filter():
     global original_image, filtered_image, history, redo_stack
-    
-    if original_image or filtered_image is None:
+
+    if original_image is None or filtered_image is None:
         return jsonify({'error': 'No image available'}), 400
-    
+
     kernel_size = 3
     sigma = 1.4
     ax = np.linspace(-(kernel_size - 1) / 2., (kernel_size - 1) / 2., kernel_size)
@@ -146,16 +146,16 @@ def gaussian_filter():
     filtered_image = cv2.filter2D(filtered_image, -1, kernel)
     history.append(filtered_image.copy())
     redo_stack = []
-    
+
     return save_image_to_response(filtered_image)
 
 @app.route('/histogram_equalization', methods=['GET'])
 def histogram_equalization():
     global original_image,  filtered_image, history, redo_stack
-    
-    if original_image or filtered_image is None:
+
+    if original_image is None or filtered_image is None:
         return jsonify({'error': 'No image available'}), 400
-    
+
     hist, bins = np.histogram(filtered_image.flatten(), 256, [0, 256]) 
     cdf = hist.cumsum() 
     cdf_normalized = cdf * hist.max() / cdf.max() 
@@ -165,38 +165,26 @@ def histogram_equalization():
     filtered_image = cdf[filtered_image] 
     history.append(filtered_image.copy())
     redo_stack = []
-    
-    # # Create and return histogram plot
-    # plt.figure()
-    # plt.plot(cdf_normalized, color='b')
-    # plt.hist(filtered_image.flatten(), 256, [0, 256], color='r')
-    # plt.xlim([0, 256])
-    # plt.legend(('cdf', 'histogram'), loc='upper left')
-    
-    # buf = io.BytesIO()
-    # plt.savefig(buf, format='png')
-    # buf.seek(0)
-    # plt.close()
-    
+
     return save_image_to_response(filtered_image)
 
 @app.route('/show_histogram', methods=['GET'])
 def show_histogram():
     global original_image, filtered_image
-    
-    if filtered_image or original_image is None:
+
+    if filtered_image is None or original_image is None:
         return jsonify({'error': 'No image available'}), 400
-    
+
     plt.figure()
     hist, bins = np.histogram(filtered_image.flatten(), 256, [0, 256])
     plt.hist(filtered_image.flatten(), 256, [0, 256], color='r')
     plt.xlim([0, 256])
-    
+
     buf = io.BytesIO()
     plt.savefig(buf, format='png')
     buf.seek(0)
     plt.close()
-    
+
     return send_file(buf, mimetype='image/png')
 
 @app.route('/undo', methods=['GET'])
