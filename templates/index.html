@@ -1,621 +1,798 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aplikasi Perbaikan Citra Foto Lama</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      /* Custom Scrollbar */
+      ::-webkit-scrollbar {
+        width: 10px;
+      }
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aplikasi Perbaikan Citra Foto Lama</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
+      ::-webkit-scrollbar-track {
+        background: #1a1a1a;
+      }
 
-    ::-webkit-scrollbar-track {
-      background: #1a1a1a;
-    }
+      ::-webkit-scrollbar-thumb {
+        background: #f97316;
+        border-radius: 5px;
+      }
 
-    ::-webkit-scrollbar-thumb {
-      background: #f97316;
-      border-radius: 5px;
-    }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #ea580c;
+      }
 
-    ::-webkit-scrollbar-thumb:hover {
-      background: #ea580c;
-    }
+      /* Histogram Modal Transition */
+      #histogramModal {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
 
-    /* Histogram Modal Transition */
-    #histogramModal {
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
+      #histogramModal:not(.hidden) {
+        opacity: 1;
+      }
 
-    #histogramModal:not(.hidden) {
-      opacity: 1;
-    }
+      /* Histogram Image Container */
+      #histogramImage {
+        min-height: 300px;
+        background-color: #111827;
+        border-radius: 0.5rem;
+      }
+    </style>
+  </head>
 
-    /* Histogram Image Container */
-    #histogramImage {
-      min-height: 300px;
-      background-color: #111827;
-      border-radius: 0.5rem;
-    }
-  </style>
-</head>
+  <body
+    class="bg-gradient-to-br from-gray-950 via-gray-900 to-orange-950 min-h-screen text-orange-100"
+  >
+    <!-- Hero Section -->
+    <section
+      class="h-screen flex items-center justify-center relative overflow-hidden"
+    >
+      <div
+        class="absolute inset-0 bg-[url('/static/images/hero-bg.png')] bg-cover bg-center opacity-20"
+      ></div>
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-transparent via-gray-950/50 to-gray-950"
+      ></div>
+      <div class="z-10 text-center px-4 max-w-3xl mx-auto">
+        <h1
+          class="text-7xl font-bold mb-6 pb-3 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-500"
+        >
+          Selamat Datang
+        </h1>
+        <p class="text-2xl text-orange-200 mb-12 leading-relaxed">
+          Dari Buram Menjadi Berbinar. Kami tak hanya memperbaiki kualitas foto
+          lama Anda, tapi juga secara otomatis mendeteksi dan menandai
+          orang-orang dalam gambar.
+        </p>
+        <a
+          href="#main-content"
+          class="inline-block bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white px-10 py-4 rounded-xl transition-all transform hover:scale-105 shadow-lg shadow-orange-500/20 text-lg font-medium"
+        >
+          Mulai Sekarang
+        </a>
+      </div>
+    </section>
 
-<body class="bg-gradient-to-br from-gray-950 via-gray-900 to-orange-950 min-h-screen text-orange-100">
-  <!-- Hero Section -->
-  <section class="h-screen flex items-center justify-center relative overflow-hidden">
-    <div class="absolute inset-0 bg-[url('/static/images/hero-bg.png')] bg-cover bg-center opacity-20"></div>
-    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-gray-950/50 to-gray-950"></div>
-    <div class="z-10 text-center px-4 max-w-3xl mx-auto">
-      <h1
-        class="text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-500">
-        Selamat Datang
-      </h1>
-      <p class="text-2xl text-orange-200 mb-12 leading-relaxed">
-        Perbaiki foto lama Anda dengan bantuan teknologi AI
-      </p>
-      <a href="#main-content"
-        class="inline-block bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white px-10 py-4 rounded-xl transition-all transform hover:scale-105 shadow-lg shadow-orange-500/20 text-lg font-medium">
-        Mulai Sekarang
-      </a>
-    </div>
-  </section>
-
-  <!-- Main Content -->
-  <section id="main-content" class="min-h-screen py-24 bg-gradient-to-b from-gray-950 to-gray-900">
-    <div class="container mx-auto px-6 max-w-7xl">
-      <h2
-        class="text-5xl font-bold text-center mb-16 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-500">
-        Perbaikan Citra Foto Lama
-      </h2>
-      <div class="grid gap-12">
-        <!-- Image Preview Component -->
-        <div class="grid md:grid-cols-2 gap-8">
-          <div class="bg-white/5 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-orange-500/10">
-            <div class="flex justify-between items-center mb-6">
-              <h3
-                class="text-2xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">
-                Foto Asli
-              </h3>
-              <input type="file" id="imageUpload" accept="image/*" class="hidden" />
-              <label for="imageUpload"
-                class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg cursor-pointer transition-colors">
-                Load Foto
-              </label>
+    <!-- Main Content -->
+    <section
+      id="main-content"
+      class="min-h-screen py-24 bg-gradient-to-b from-gray-950 to-gray-900"
+    >
+      <div class="container mx-auto px-6 max-w-7xl">
+        <h2
+          class="text-5xl font-bold text-center mb-16 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-500"
+        >
+          Perbaikan Citra Foto Lama
+        </h2>
+        <div class="grid gap-12">
+          <!-- Image Preview Component -->
+          <div class="grid md:grid-cols-2 gap-8">
+            <div
+              class="bg-white/5 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-orange-500/10"
+            >
+              <div class="flex justify-between items-center mb-6">
+                <h3
+                  class="text-2xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400"
+                >
+                  Foto Asli
+                </h3>
+                <input
+                  type="file"
+                  id="imageUpload"
+                  accept="image/*"
+                  class="hidden"
+                />
+                <label
+                  for="imageUpload"
+                  class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg cursor-pointer transition-colors"
+                >
+                  Load Foto
+                </label>
+              </div>
+              <div
+                class="aspect-video bg-gray-950 rounded-xl overflow-hidden border border-orange-500/10 shadow-inner"
+              >
+                <img
+                  id="originalImage"
+                  src=""
+                  alt="Foto Asli"
+                  class="w-full h-full object-contain hidden"
+                  crossorigin="anonymous"
+                />
+                <div
+                  id="originalPlaceholder"
+                  class="w-full h-full flex items-center justify-center text-gray-500"
+                >
+                  No image loaded
+                </div>
+              </div>
             </div>
-            <div class="aspect-video bg-gray-950 rounded-xl overflow-hidden border border-orange-500/10 shadow-inner">
-              <img id="originalImage" src="" alt="Foto Asli" class="w-full h-full object-contain hidden"
-                crossorigin="anonymous" />
-              <div id="originalPlaceholder" class="w-full h-full flex items-center justify-center text-gray-500">
-                No image loaded
+            <div
+              class="bg-white/5 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-orange-500/10 relative"
+            >
+              <div class="flex justify-between items-center mb-6">
+                <h3
+                  class="text-2xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400"
+                >
+                  Foto Hasil Perbaikan
+                </h3>
+              </div>
+              <div
+                class="aspect-video bg-gray-950 rounded-xl overflow-hidden border border-orange-500/10 shadow-inner"
+              >
+                <img
+                  id="processedImage"
+                  src=""
+                  alt="Foto Hasil Perbaikan"
+                  class="w-full h-full object-contain hidden"
+                />
+                <div
+                  id="processedPlaceholder"
+                  class="w-full h-full flex items-center justify-center text-gray-500"
+                >
+                  Processed image will appear here
+                </div>
+                <canvas id="faceCanvas" class="absolute top-0 left-0"></canvas>
               </div>
             </div>
           </div>
-          <div class="bg-white/5 backdrop-blur-xl rounded-2xl p-6 shadow-xl border border-orange-500/10 relative">
-            <div class="flex justify-between items-center mb-6">
-              <h3
-                class="text-2xl font-semibold text-center text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">
-                Foto Hasil Perbaikan
-              </h3>
-              <button id="detectExpressionBtn"
-                class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg cursor-pointer transition-colors">
+
+          <!-- Image Controls Component -->
+          <div
+            class="bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-orange-500/10"
+          >
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <!-- Filter Buttons -->
+              <div class="space-y-4">
+                <h3
+                  class="text-xl font-semibold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400"
+                >
+                  Filters
+                </h3>
+                <div class="grid grid-cols-2 gap-3">
+                  <button
+                    id="gaussianBtn"
+                    class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium backdrop-blur-sm"
+                  >
+                    Gaussian
+                  </button>
+                  <button
+                    id="binerBtn"
+                    class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium backdrop-blur-sm"
+                  >
+                    Biner
+                  </button>
+                  <button
+                    id="grayscaleBtn"
+                    class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium backdrop-blur-sm"
+                  >
+                    Grayscale
+                  </button>
+                  <button
+                    id="histogramBtn"
+                    class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium backdrop-blur-sm"
+                  >
+                    Histogram
+                  </button>
+                </div>
+              </div>
+
+              <!-- Sliders Section -->
+              <div class="col-span-2">
+                <h3
+                  class="text-xl font-semibold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400"
+                >
+                  Adjustments
+                </h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div class="space-y-4">
+                    <div class="space-y-2">
+                      <label class="text-orange-300 text-sm">Brightness</label>
+                      <input
+                        type="range"
+                        id="brightness"
+                        min="-100"
+                        max="100"
+                        value="0"
+                        class="w-full accent-orange-500"
+                      />
+                      <span id="brightnessValue" class="text-xs text-orange-300"
+                        >0</span
+                      >
+                    </div>
+                    <div class="space-y-2">
+                      <label class="text-orange-300 text-sm">Contrast</label>
+                      <input
+                        type="range"
+                        id="contrast"
+                        min="0"
+                        max="200"
+                        value="100"
+                        class="w-full accent-orange-500"
+                      />
+                      <span id="contrastValue" class="text-xs text-orange-300"
+                        >100</span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="space-y-4">
+                    <div class="space-y-2">
+                      <label class="text-orange-300 text-sm">Sharpening</label>
+                      <input
+                        type="range"
+                        id="sharpening"
+                        min="0"
+                        max="100"
+                        value="0"
+                        class="w-full accent-orange-500"
+                      />
+                      <span id="sharpeningValue" class="text-xs text-orange-300"
+                        >0</span
+                      >
+                    </div>
+                    <div class="space-y-2">
+                      <label class="text-orange-300 text-sm">Saturation</label>
+                      <input
+                        type="range"
+                        id="saturation"
+                        min="0"
+                        max="200"
+                        value="100"
+                        class="w-full accent-orange-500"
+                      />
+                      <span id="saturationValue" class="text-xs text-orange-300"
+                        >100</span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="space-y-4">
+                    <div class="space-y-2">
+                      <label class="text-orange-300 text-sm">Hue</label>
+                      <input
+                        type="range"
+                        id="hue"
+                        min="-180"
+                        max="180"
+                        value="0"
+                        class="w-full accent-orange-500"
+                      />
+                      <span id="hueValue" class="text-xs text-orange-300"
+                        >0</span
+                      >
+                    </div>
+                    <div class="space-y-2">
+                      <label class="text-orange-300 text-sm">Value</label>
+                      <input
+                        type="range"
+                        id="value"
+                        min="0"
+                        max="200"
+                        value="100"
+                        class="w-full accent-orange-500"
+                      />
+                      <span id="valueValue" class="text-xs text-orange-300"
+                        >100</span
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div
+              class="flex flex-wrap justify-between items-center mt-8 pt-6 border-t border-orange-500/10"
+            >
+              <div class="flex gap-3">
+                <button
+                  id="undoBtn"
+                  class="bg-red-500/80 hover:bg-red-500 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105"
+                >
+                  Undo
+                </button>
+                <button
+                  id="redoBtn"
+                  class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105"
+                >
+                  Redo
+                </button>
+                <button
+                  id="resetBtn"
+                  class="bg-gray-600/80 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105"
+                >
+                  Reset
+                </button>
+              </div>
+              <div class="flex items-center gap-4">
+                <span class="text-orange-300 text-sm">Save as:</span>
+                <button
+                  id="saveExcelBtn"
+                  class="bg-teal-600/80 hover:bg-teal-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105"
+                >
+                  .xlsx
+                </button>
+                <button
+                  id="saveTextBtn"
+                  class="bg-gray-600/80 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105"
+                >
+                  .txt
+                </button>
+                <button
+                  id="saveImageBtn"
+                  class="bg-amber-600/80 hover:bg-amber-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105"
+                >
+                  .png
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card Deteksi -->
+          <div
+            class="bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-orange-500/10 mt-8"
+          >
+            <h3
+              class="text-xl font-semibold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400"
+            >
+              Deteksi pada Foto Hasil Perbaikan
+            </h3>
+            <div class="flex flex-wrap gap-4">
+              <button
+                id="detectExpressionBtn"
+                class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium"
+              >
                 Deteksi Ekspresi
               </button>
+              <button
+                id="detectFaceBtn"
+                class="bg-teal-600/80 hover:bg-teal-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium"
+              >
+                Deteksi Wajah
+              </button>
+              <button
+                id="clearDetectionBtn"
+                class="bg-red-600/80 hover:bg-red-700 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium"
+              >
+                Hapus
+              </button>
             </div>
-            <div class="aspect-video bg-gray-950 rounded-xl overflow-hidden border border-orange-500/10 shadow-inner">
-              <img id="processedImage" src="" alt="Foto Hasil Perbaikan" class="w-full h-full object-contain hidden" />
-              <div id="processedPlaceholder" class="w-full h-full flex items-center justify-center text-gray-500">
-                Processed image will appear here
-              </div>
-              <canvas id="faceCanvas" class="absolute top-0 left-0"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <!-- Image Controls Component -->
-        <div class="bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-orange-500/10">
-          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Filter Buttons -->
-            <div class="space-y-4">
-              <h3
-                class="text-xl font-semibold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">
-                Filters
-              </h3>
-              <div class="grid grid-cols-2 gap-3">
-                <button id="gaussianBtn"
-                  class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium backdrop-blur-sm">
-                  Gaussian
-                </button>
-                <button id="binerBtn"
-                  class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium backdrop-blur-sm">
-                  Biner
-                </button>
-                <button id="grayscaleBtn"
-                  class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium backdrop-blur-sm">
-                  Grayscale
-                </button>
-                <button id="histogramBtn"
-                  class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium backdrop-blur-sm">
-                  Histogram
-                </button>
-              </div>
-            </div>
-
-            <!-- Sliders Section -->
-            <div class="col-span-2">
-              <h3
-                class="text-xl font-semibold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">
-                Adjustments
-              </h3>
-              <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="space-y-4">
-                  <div class="space-y-2">
-                    <label class="text-orange-300 text-sm">Brightness</label>
-                    <input type="range" id="brightness" min="-100" max="100" value="0"
-                      class="w-full accent-orange-500" />
-                    <span id="brightnessValue" class="text-xs text-orange-300">0</span>
-                  </div>
-                  <div class="space-y-2">
-                    <label class="text-orange-300 text-sm">Contrast</label>
-                    <input type="range" id="contrast" min="0" max="200" value="100" class="w-full accent-orange-500" />
-                    <span id="contrastValue" class="text-xs text-orange-300">100</span>
-                  </div>
-                </div>
-
-                <div class="space-y-4">
-                  <div class="space-y-2">
-                    <label class="text-orange-300 text-sm">Sharpening</label>
-                    <input type="range" id="sharpening" min="0" max="100" value="0" class="w-full accent-orange-500" />
-                    <span id="sharpeningValue" class="text-xs text-orange-300">0</span>
-                  </div>
-                  <div class="space-y-2">
-                    <label class="text-orange-300 text-sm">Saturation</label>
-                    <input type="range" id="saturation" min="0" max="200" value="100"
-                      class="w-full accent-orange-500" />
-                    <span id="saturationValue" class="text-xs text-orange-300">100</span>
-                  </div>
-                </div>
-
-                <div class="space-y-4">
-                  <div class="space-y-2">
-                    <label class="text-orange-300 text-sm">Hue</label>
-                    <input type="range" id="hue" min="-180" max="180" value="0" class="w-full accent-orange-500" />
-                    <span id="hueValue" class="text-xs text-orange-300">0</span>
-                  </div>
-                  <div class="space-y-2">
-                    <label class="text-orange-300 text-sm">Value</label>
-                    <input type="range" id="value" min="0" max="200" value="100" class="w-full accent-orange-500" />
-                    <span id="valueValue" class="text-xs text-orange-300">100</span>
-                  </div>
+            <div class="mt-6">
+              <!-- Ganti canvas dengan card gambar hasil deteksi -->
+              <div
+                class="aspect-video bg-gray-950 rounded-xl overflow-hidden border border-orange-400 shadow-inner flex items-center justify-center"
+              >
+                <img
+                  id="detectionImage"
+                  src=""
+                  alt="Hasil Deteksi"
+                  class="w-full h-full object-contain hidden"
+                />
+                <div
+                  id="detectionPlaceholder"
+                  class="w-full h-full flex items-center justify-center text-gray-500"
+                >
+                  Hasil deteksi akan muncul di sini
                 </div>
               </div>
             </div>
-          </div>
-
-          <!-- Action Buttons -->
-          <div class="flex flex-wrap justify-between items-center mt-8 pt-6 border-t border-orange-500/10">
-            <div class="flex gap-3">
-              <button id="undoBtn"
-                class="bg-red-500/80 hover:bg-red-500 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105">
-                Undo
-              </button>
-              <button id="redoBtn"
-                class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105">
-                Redo
-              </button>
-              <button id="resetBtn"
-                class="bg-gray-600/80 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105">
-                Reset
-              </button>
-            </div>
-            <div class="flex items-center gap-4">
-              <span class="text-orange-300 text-sm">Save as:</span>
-              <button id="saveExcelBtn"
-                class="bg-teal-600/80 hover:bg-teal-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105">
-                .xlsx
-              </button>
-              <button id="saveTextBtn"
-                class="bg-gray-600/80 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105">
-                .txt
-              </button>
-              <button id="saveImageBtn"
-                class="bg-amber-600/80 hover:bg-amber-600 text-white px-4 py-2 rounded-lg transition-all transform hover:scale-105">
-                .png
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card Deteksi -->
-        <div class="bg-white/5 backdrop-blur-xl rounded-2xl p-8 shadow-xl border border-orange-500/10 mt-8">
-          <h3
-            class="text-xl font-semibold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">
-            Deteksi pada Foto Hasil Perbaikan
-          </h3>
-          <div class="flex flex-wrap gap-4">
-            <button id="detectExpressionBtn"
-              class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium">
-              Deteksi Ekspresi
-            </button>
-            <button id="detectFaceBtn"
-              class="bg-teal-600/80 hover:bg-teal-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium">
-              Deteksi Wajah
-            </button>
-          </div>
-          <div class="mt-6">
-            <canvas id="detectionCanvas" class="w-full rounded-lg border border-orange-400" style="
-                  max-width: 100%;
-                  max-height: 500px;
-                  min-height: 250px;
-                  display: block;
-                  margin: auto;
-                "></canvas>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Histogram Modal -->
-    <div id="histogramModal"
-      class="fixed inset-0 z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div class="bg-gray-800 rounded-xl p-6 max-w-4xl w-full mx-4 border border-orange-500/30 relative shadow-2xl">
-        <button id="closeHistogramModal"
-          class="absolute top-4 right-4 text-orange-400 hover:text-orange-300 transition-colors">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-        <h3
-          class="text-2xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400">
-          Histogram Comparison
-        </h3>
-        <div class="bg-gray-900 rounded-lg p-4 max-h-[70vh] overflow-auto">
-          <img id="histogramImage" class="w-full h-auto" alt="Histogram Comparison" />
-        </div>
-        <div class="mt-4 flex justify-center">
-          <button class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg transition-colors">
-            Save Histogram
+      <!-- Histogram Modal -->
+      <div
+        id="histogramModal"
+        class="fixed inset-0 z-50 hidden opacity-0 transition-opacity duration-300 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+      >
+        <div
+          class="bg-gray-800 rounded-xl p-6 max-w-4xl w-full mx-4 border border-orange-500/30 relative shadow-2xl"
+        >
+          <button
+            id="closeHistogramModal"
+            class="absolute top-4 right-4 text-orange-400 hover:text-orange-300 transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-8 w-8"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
           </button>
+          <h3
+            class="text-2xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-400"
+          >
+            Histogram Comparison
+          </h3>
+          <div class="bg-gray-900 rounded-lg p-4 max-h-[70vh] overflow-auto">
+            <img
+              id="histogramImage"
+              class="w-full h-auto"
+              alt="Histogram Comparison"
+            />
+          </div>
+          <div class="mt-4 flex justify-center">
+            <button
+              class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg transition-colors"
+            >
+              Save Histogram
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Team Section -->
-  {% include 'components/Team.html' %}
+    <!-- Team Section -->
+    {% include 'components/Team.html' %}
 
-  <script>
-    // DOM Elements
-    const imageUpload = document.getElementById("imageUpload");
-    const originalImage = document.getElementById("originalImage");
-    const processedImage = document.getElementById("processedImage");
-    const originalPlaceholder = document.getElementById(
-      "originalPlaceholder"
-    );
-    const processedPlaceholder = document.getElementById(
-      "processedPlaceholder"
-    );
+    <script>
+      // DOM Elements
+      const imageUpload = document.getElementById("imageUpload");
+      const originalImage = document.getElementById("originalImage");
+      const processedImage = document.getElementById("processedImage");
+      const originalPlaceholder = document.getElementById(
+        "originalPlaceholder"
+      );
+      const processedPlaceholder = document.getElementById(
+        "processedPlaceholder"
+      );
 
-    // Filter buttons
-    const grayscaleBtn = document.getElementById("grayscaleBtn");
-    const binerBtn = document.getElementById("binerBtn");
-    const gaussianBtn = document.getElementById("gaussianBtn");
-    const histogramBtn = document.getElementById("histogramBtn");
+      // Filter buttons
+      const grayscaleBtn = document.getElementById("grayscaleBtn");
+      const binerBtn = document.getElementById("binerBtn");
+      const gaussianBtn = document.getElementById("gaussianBtn");
+      const histogramBtn = document.getElementById("histogramBtn");
 
-    // Adjustment sliders
-    const brightnessSlider = document.getElementById("brightness");
-    const contrastSlider = document.getElementById("contrast");
-    const sharpeningSlider = document.getElementById("sharpening");
-    const saturationSlider = document.getElementById("saturation");
-    const hueSlider = document.getElementById("hue");
-    const valueSlider = document.getElementById("value");
+      // Adjustment sliders
+      const brightnessSlider = document.getElementById("brightness");
+      const contrastSlider = document.getElementById("contrast");
+      const sharpeningSlider = document.getElementById("sharpening");
+      const saturationSlider = document.getElementById("saturation");
+      const hueSlider = document.getElementById("hue");
+      const valueSlider = document.getElementById("value");
 
-    // Action buttons
-    const undoBtn = document.getElementById("undoBtn");
-    const redoBtn = document.getElementById("redoBtn");
-    const resetBtn = document.getElementById("resetBtn");
-    const saveExcelBtn = document.getElementById("saveExcelBtn");
-    const saveTextBtn = document.getElementById("saveTextBtn");
-    const saveImageBtn = document.getElementById("saveImageBtn");
+      // Action buttons
+      const undoBtn = document.getElementById("undoBtn");
+      const redoBtn = document.getElementById("redoBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const saveExcelBtn = document.getElementById("saveExcelBtn");
+      const saveTextBtn = document.getElementById("saveTextBtn");
+      const saveImageBtn = document.getElementById("saveImageBtn");
 
-    // Slider value displays
-    const brightnessValue = document.getElementById("brightnessValue");
-    const contrastValue = document.getElementById("contrastValue");
-    const sharpeningValue = document.getElementById("sharpeningValue");
-    const saturationValue = document.getElementById("saturationValue");
-    const hueValue = document.getElementById("hueValue");
-    const valueValue = document.getElementById("valueValue");
+      // Slider value displays
+      const brightnessValue = document.getElementById("brightnessValue");
+      const contrastValue = document.getElementById("contrastValue");
+      const sharpeningValue = document.getElementById("sharpeningValue");
+      const saturationValue = document.getElementById("saturationValue");
+      const hueValue = document.getElementById("hueValue");
+      const valueValue = document.getElementById("valueValue");
 
-    // Histogram Modal Elements
-    const histogramModal = document.getElementById('histogramModal');
-    const closeHistogramModal = document.getElementById('closeHistogramModal');
-    const histogramImage = document.getElementById('histogramImage');
+      // Histogram Modal Elements
+      const histogramModal = document.getElementById("histogramModal");
+      const closeHistogramModal = document.getElementById(
+        "closeHistogramModal"
+      );
+      const histogramImage = document.getElementById("histogramImage");
 
-    //deteksi ekspresi
-    const detectExpressionBtn = document.getElementById('detectExpressionBtn');
+      //deteksi ekspresi
+      const detectExpressionBtn = document.getElementById(
+        "detectExpressionBtn"
+      );
 
-    // Improved Modal Functions
-    function openHistogramModal() {
-      histogramModal.classList.remove("hidden");
-      document.body.classList.add("overflow-hidden");
+      // Improved Modal Functions
+      function openHistogramModal() {
+        histogramModal.classList.remove("hidden");
+        document.body.classList.add("overflow-hidden");
 
-      // Add animation
-      histogramModal.classList.remove("opacity-0");
-      histogramModal.classList.add("opacity-100");
-    }
-
-    function closeHistModal() {
-      // Add animation
-      histogramModal.classList.remove("opacity-100");
-      histogramModal.classList.add("opacity-0");
-
-      setTimeout(() => {
-        histogramModal.classList.add("hidden");
-        document.body.classList.remove("overflow-hidden");
-      }, 300);
-    }
-
-    // Close modal handlers
-    closeHistogramModal.addEventListener("click", closeHistModal);
-
-    document.addEventListener("keydown", (e) => {
-      if (
-        e.key === "Escape" &&
-        !histogramModal.classList.contains("hidden")
-      ) {
-        closeHistModal();
+        // Add animation
+        histogramModal.classList.remove("opacity-0");
+        histogramModal.classList.add("opacity-100");
       }
-    });
 
-    // Global state
-    let currentImageUrl = null;
+      function closeHistModal() {
+        // Add animation
+        histogramModal.classList.remove("opacity-100");
+        histogramModal.classList.add("opacity-0");
 
-    // Reset state saat halaman dimuat
-    window.addEventListener("load", () => {
-      // Reset semua tampilan gambar
-      originalImage.src = "";
-      processedImage.src = "";
-      originalImage.classList.add("hidden");
-      processedImage.classList.add("hidden");
-      originalPlaceholder.classList.remove("hidden");
-      processedPlaceholder.classList.remove("hidden");
+        setTimeout(() => {
+          histogramModal.classList.add("hidden");
+          document.body.classList.remove("overflow-hidden");
+        }, 300);
+      }
 
-      // Reset slider values
-      resetSliders();
-    });
+      // Close modal handlers
+      closeHistogramModal.addEventListener("click", closeHistModal);
 
-    // Event listeners for sliders to update their display values
-    brightnessSlider.addEventListener("input", () => {
-      brightnessValue.textContent = brightnessSlider.value;
-      applyAdjustments();
-    });
-
-    contrastSlider.addEventListener("input", () => {
-      contrastValue.textContent = contrastSlider.value;
-      applyAdjustments();
-    });
-
-    sharpeningSlider.addEventListener("input", () => {
-      sharpeningValue.textContent = sharpeningSlider.value;
-      applyAdjustments();
-    });
-
-    saturationSlider.addEventListener("input", () => {
-      saturationValue.textContent = saturationSlider.value;
-      applyAdjustments();
-    });
-
-    hueSlider.addEventListener("input", () => {
-      hueValue.textContent = hueSlider.value;
-      applyAdjustments();
-    });
-
-    valueSlider.addEventListener("input", () => {
-      valueValue.textContent = valueSlider.value;
-      applyAdjustments();
-    });
-
-    // Image upload handler
-    imageUpload.addEventListener("change", async (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-      try {
-        const response = await fetch("/load_image", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-
-          // Use the returned URL to display the image
-          originalImage.src = data.image_url;
-          processedImage.src = data.image_url;
-          originalImage.classList.remove("hidden");
-          processedImage.classList.remove("hidden");
-          originalPlaceholder.classList.add("hidden");
-          processedPlaceholder.classList.add("hidden");
-
-          // Reset sliders to default values
-          resetSliders();
-
-          console.log("Image loaded successfully");
-        } else {
-          const error = await response.json();
-          console.error("Error loading image:", error.error);
-          alert("Failed to load image: " + error.error);
+      document.addEventListener("keydown", (e) => {
+        if (
+          e.key === "Escape" &&
+          !histogramModal.classList.contains("hidden")
+        ) {
+          closeHistModal();
         }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred while loading the image");
-      }
-    });
+      });
 
-    function resetSliders() {
-      brightnessSlider.value = 0;
-      contrastSlider.value = 100;
-      sharpeningSlider.value = 0;
-      saturationSlider.value = 100;
-      hueSlider.value = 0;
-      valueSlider.value = 100;
+      // Global state
+      let currentImageUrl = null;
 
-      brightnessValue.textContent = "0";
-      contrastValue.textContent = "100";
-      sharpeningValue.textContent = "0";
-      saturationValue.textContent = "100";
-      hueValue.textContent = "0";
-      valueValue.textContent = "100";
-    }
+      // Reset state saat halaman dimuat
+      window.addEventListener("load", () => {
+        // Reset semua tampilan gambar
+        originalImage.src = "";
+        processedImage.src = "";
+        originalImage.classList.add("hidden");
+        processedImage.classList.add("hidden");
+        originalPlaceholder.classList.remove("hidden");
+        processedPlaceholder.classList.remove("hidden");
 
-    // Filter buttons
-    grayscaleBtn.addEventListener("click", async () => {
-      try {
-        const response = await fetch("/grayscale", {
-          method: "GET",
-        });
+        // Reset slider values
+        resetSliders();
+      });
 
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          processedImage.src = url;
-          console.log("Grayscale filter applied");
-        } else {
-          const error = await response.json();
-          console.error("Error applying grayscale:", error.error);
-          alert("Failed to apply grayscale: " + error.error);
+      // Event listeners for sliders to update their display values
+      brightnessSlider.addEventListener("input", () => {
+        brightnessValue.textContent = brightnessSlider.value;
+        applyAdjustments();
+      });
+
+      contrastSlider.addEventListener("input", () => {
+        contrastValue.textContent = contrastSlider.value;
+        applyAdjustments();
+      });
+
+      sharpeningSlider.addEventListener("input", () => {
+        sharpeningValue.textContent = sharpeningSlider.value;
+        applyAdjustments();
+      });
+
+      saturationSlider.addEventListener("input", () => {
+        saturationValue.textContent = saturationSlider.value;
+        applyAdjustments();
+      });
+
+      hueSlider.addEventListener("input", () => {
+        hueValue.textContent = hueSlider.value;
+        applyAdjustments();
+      });
+
+      valueSlider.addEventListener("input", () => {
+        valueValue.textContent = valueSlider.value;
+        applyAdjustments();
+      });
+
+      // Image upload handler
+      imageUpload.addEventListener("change", async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          const response = await fetch("/load_image", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+
+            // Use the returned URL to display the image
+            originalImage.src = data.image_url;
+            processedImage.src = data.image_url;
+            originalImage.classList.remove("hidden");
+            processedImage.classList.remove("hidden");
+            originalPlaceholder.classList.add("hidden");
+            processedPlaceholder.classList.add("hidden");
+
+            // Reset sliders to default values
+            resetSliders();
+
+            console.log("Image loaded successfully");
+          } else {
+            const error = await response.json();
+            console.error("Error loading image:", error.error);
+            alert("Failed to load image: " + error.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while loading the image");
         }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred while applying grayscale");
+      });
+
+      function resetSliders() {
+        brightnessSlider.value = 0;
+        contrastSlider.value = 100;
+        sharpeningSlider.value = 0;
+        saturationSlider.value = 100;
+        hueSlider.value = 0;
+        valueSlider.value = 100;
+
+        brightnessValue.textContent = "0";
+        contrastValue.textContent = "100";
+        sharpeningValue.textContent = "0";
+        saturationValue.textContent = "100";
+        hueValue.textContent = "0";
+        valueValue.textContent = "100";
       }
-    });
 
-    binerBtn.addEventListener("click", async () => {
-      try {
-        const response = await fetch("/biner", {
-          method: "GET",
-        });
-
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          processedImage.src = url;
-          console.log("Biner filter applied");
-        } else {
-          const error = await response.json();
-          console.error("Error applying biner:", error.error);
-          alert("Failed to apply biner: " + error.error);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred while applying biner");
-      }
-    });
-
-    gaussianBtn.addEventListener("click", async () => {
-      try {
-        const response = await fetch("/gaussian_filter", {
-          method: "GET",
-        });
-
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          processedImage.src = url;
-          console.log("Gaussian filter applied");
-        } else {
-          const error = await response.json();
-          console.error("Error applying gaussian:", error.error);
-          alert("Failed to apply gaussian: " + error.error);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred while applying gaussian");
-      }
-    });
-
-    histogramBtn.addEventListener("click", async () => {
-      try {
-        const response = await fetch("/histogram_equalization", {
-          method: "GET",
-        });
-
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          processedImage.src = url;
-          console.log("Histogram equalization applied");
-
-          // Show histogram in modal instead of new window
-          const histResponse = await fetch("/show_histogram", {
+      // Filter buttons
+      grayscaleBtn.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/grayscale", {
             method: "GET",
           });
 
-          if (histResponse.ok) {
-            const histBlob = await histResponse.blob();
-            const histUrl = URL.createObjectURL(histBlob);
-
-            // Set the image source and show modal
-            const histogramImage = document.getElementById("histogramImage");
-            histogramImage.src = histUrl;
-
-            const histogramModal = document.getElementById('histogramModal');
-            histogramModal.classList.remove('hidden');
-            setTimeout(() => {
-              histogramModal.classList.remove('opacity-0');
-            }, 20);
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            processedImage.src = url;
+            console.log("Grayscale filter applied");
+          } else {
+            const error = await response.json();
+            console.error("Error applying grayscale:", error.error);
+            alert("Failed to apply grayscale: " + error.error);
           }
-        } else {
-          const error = await response.json();
-          console.error('Error applying histogram:', error.error);
-          alert('Failed to apply histogram: ' + error.error);
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while applying grayscale");
         }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while applying histogram');
-      }
-    });
+      });
 
-    detectExpressionBtn.addEventListener('click', async () => {
-      try {
-        // Periksa apakah ada gambar yang sudah diupload
-        if (!imageUpload.files || imageUpload.files.length === 0) {
-          alert('Silakan upload gambar terlebih dahulu');
-          return;
+      binerBtn.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/biner", {
+            method: "GET",
+          });
+
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            processedImage.src = url;
+            console.log("Biner filter applied");
+          } else {
+            const error = await response.json();
+            console.error("Error applying biner:", error.error);
+            alert("Failed to apply biner: " + error.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while applying biner");
         }
+      });
 
-        // Tampilkan loading state
-        detectExpressionBtn.disabled = true;
-        detectExpressionBtn.innerHTML = 'Memproses...';
+      gaussianBtn.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/gaussian_filter", {
+            method: "GET",
+          });
 
-        const formData = new FormData();
-        formData.append('file', imageUpload.files[0]);
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            processedImage.src = url;
+            console.log("Gaussian filter applied");
+          } else {
+            const error = await response.json();
+            console.error("Error applying gaussian:", error.error);
+            alert("Failed to apply gaussian: " + error.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while applying gaussian");
+        }
+      });
 
-        const response = await fetch('/detect_expression', {
-          method: 'POST',
-          body: formData
-        });
+      histogramBtn.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/histogram_equalization", {
+            method: "GET",
+          });
 
-        if (response.ok) {
-          const result = await response.json();
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            processedImage.src = url;
+            console.log("Histogram equalization applied");
 
-          // Tampilkan gambar hasil deteksi
-          processedImage.src = result.result_image_url;
+            // Show histogram in modal instead of new window
+            const histResponse = await fetch("/show_histogram", {
+              method: "GET",
+            });
 
-          // Tampilkan hasil ekspresi
-          console.log('Ekspresi yang terdeteksi:', result.expression);
+            if (histResponse.ok) {
+              const histBlob = await histResponse.blob();
+              const histUrl = URL.createObjectURL(histBlob);
 
-          // Buat notifikasi lebih menarik
-          const notification = document.createElement('div');
-          notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg';
-          notification.innerHTML = `
+              // Set the image source and show modal
+              const histogramImage = document.getElementById("histogramImage");
+              histogramImage.src = histUrl;
+
+              const histogramModal = document.getElementById("histogramModal");
+              histogramModal.classList.remove("hidden");
+              setTimeout(() => {
+                histogramModal.classList.remove("opacity-0");
+              }, 20);
+            }
+          } else {
+            const error = await response.json();
+            console.error("Error applying histogram:", error.error);
+            alert("Failed to apply histogram: " + error.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while applying histogram");
+        }
+      });
+
+      detectExpressionBtn.addEventListener("click", async () => {
+        try {
+          // Periksa apakah ada gambar yang sudah diupload
+          if (!imageUpload.files || imageUpload.files.length === 0) {
+            alert("Silakan upload gambar terlebih dahulu");
+            return;
+          }
+
+          // Tampilkan loading state
+          detectExpressionBtn.disabled = true;
+          detectExpressionBtn.innerHTML = "Memproses...";
+
+          const formData = new FormData();
+          formData.append("file", imageUpload.files[0]);
+
+          const response = await fetch("/detect_expression", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+
+            // Tampilkan gambar hasil deteksi di detectionImage, bukan processedImage
+            detectionImage.src = result.result_image_url;
+            detectionImage.classList.remove("hidden");
+            detectionPlaceholder.classList.add("hidden");
+
+            // Tampilkan hasil ekspresi
+            console.log("Ekspresi yang terdeteksi:", result.expression);
+
+            // Buat notifikasi lebih menarik
+            const notification = document.createElement("div");
+            notification.className =
+              "fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg";
+            notification.innerHTML = `
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -623,299 +800,291 @@
                         <span>Ekspresi terdeteksi: <strong>${result.expression}</strong></span>
                     </div>
                 `;
-          document.body.appendChild(notification);
+            document.body.appendChild(notification);
 
-          // Hilangkan notifikasi setelah 5 detik
-          setTimeout(() => {
-            notification.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-            setTimeout(() => notification.remove(), 500);
-          }, 5000);
-
-        } else {
-          const error = await response.json();
-          console.error('Error detecting expression:', error.error);
-          alert('Gagal mendeteksi ekspresi: ' + error.error);
+            // Hilangkan notifikasi setelah 5 detik
+            setTimeout(() => {
+              notification.classList.add(
+                "opacity-0",
+                "transition-opacity",
+                "duration-500"
+              );
+              setTimeout(() => notification.remove(), 500);
+            }, 5000);
+          } else {
+            const error = await response.json();
+            console.error("Error detecting expression:", error.error);
+            alert("Gagal mendeteksi ekspresi: " + error.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("Terjadi kesalahan saat mendeteksi ekspresi");
+        } finally {
+          // Reset tombol ke state semula
+          detectExpressionBtn.disabled = false;
+          detectExpressionBtn.innerHTML = "Deteksi Ekspresi";
         }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan saat mendeteksi ekspresi');
-      } finally {
-        // Reset tombol ke state semula
-        detectExpressionBtn.disabled = false;
-        detectExpressionBtn.innerHTML = 'Deteksi Ekspresi';
+      });
+
+      // Action buttons
+      undoBtn.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/undo", {
+            method: "GET",
+          });
+
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            processedImage.src = url;
+            console.log("Undo action performed");
+          } else {
+            const error = await response.json();
+            console.error("Error undoing:", error.error);
+            alert("Failed to undo: " + error.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while undoing");
+        }
+      });
+
+      redoBtn.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/redo", {
+            method: "GET",
+          });
+
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            processedImage.src = url;
+            console.log("Redo action performed");
+          } else {
+            const error = await response.json();
+            console.error("Error redoing:", error.error);
+            alert("Failed to redo: " + error.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while redoing");
+        }
+      });
+
+      resetBtn.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/reset_image", {
+            method: "GET",
+          });
+
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            processedImage.src = url;
+
+            // Reset sliders to default values
+            brightnessSlider.value = 0;
+            contrastSlider.value = 100;
+            sharpeningSlider.value = 0;
+            saturationSlider.value = 100;
+            hueSlider.value = 0;
+            valueSlider.value = 100;
+
+            brightnessValue.textContent = "0";
+            contrastValue.textContent = "100";
+            sharpeningValue.textContent = "0";
+            saturationValue.textContent = "100";
+            hueValue.textContent = "0";
+            valueValue.textContent = "100";
+
+            console.log("Image reset to original");
+          } else {
+            const error = await response.json();
+            console.error("Error resetting image:", error.error);
+            alert("Failed to reset image: " + error.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while resetting the image");
+        }
+      });
+
+      saveExcelBtn.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/save_edited_pixels_excel", {
+            method: "GET",
+          });
+
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "edited_pixels.xlsx";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            console.log("Excel file downloaded");
+          } else {
+            const error = await response.json();
+            console.error("Error saving to Excel:", error.error);
+            alert("Failed to save to Excel: " + error.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while saving to Excel");
+        }
+      });
+
+      saveTextBtn.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/save_edited_pixels_text", {
+            method: "GET",
+          });
+
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "edited_pixels.txt";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            console.log("Text file downloaded");
+          } else {
+            const error = await response.json();
+            console.error("Error saving to text:", error.error);
+            alert("Failed to save to text: " + error.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while saving to text");
+        }
+      });
+
+      saveImageBtn.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/save_image", {
+            method: "GET",
+          });
+
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "processed_image.png";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            console.log("Image downloaded");
+          } else {
+            const error = await response.json();
+            console.error("Error saving image:", error.error);
+            alert("Failed to save image: " + error.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while saving the image");
+        }
+      });
+
+      // Apply image adjustments
+      async function applyAdjustments() {
+        const adjustments = {
+          brightness: parseInt(brightnessSlider.value),
+          contrast: parseInt(contrastSlider.value),
+          sharpening: parseInt(sharpeningSlider.value),
+          saturation: parseInt(saturationSlider.value),
+          hue_shift: parseInt(hueSlider.value),
+          value_scale: parseInt(valueSlider.value),
+        };
+
+        try {
+          const response = await fetch("/adjust_image", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(adjustments),
+          });
+
+          if (response.ok) {
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            processedImage.src = url;
+          } else {
+            const error = await response.json();
+            console.error("Error adjusting image:", error.error);
+          }
+        } catch (error) {
+          console.error("Error:", error);
+        }
       }
-    });
 
-    // Action buttons
-    undoBtn.addEventListener("click", async () => {
-      try {
-        const response = await fetch("/undo", {
-          method: "GET",
-        });
-
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          processedImage.src = url;
-          console.log("Undo action performed");
-        } else {
-          const error = await response.json();
-          console.error("Error undoing:", error.error);
-          alert("Failed to undo: " + error.error);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred while undoing");
+      // Debounce function to limit API calls during slider adjustments
+      function debounce(func, wait) {
+        let timeout;
+        return function () {
+          const context = this;
+          const args = arguments;
+          clearTimeout(timeout);
+          timeout = setTimeout(() => {
+            func.apply(context, args);
+          }, wait);
+        };
       }
-    });
 
-    redoBtn.addEventListener("click", async () => {
-      try {
-        const response = await fetch("/redo", {
-          method: "GET",
-        });
+      // Apply debouncing to slider adjustments
+      const debouncedAdjustments = debounce(applyAdjustments, 300);
 
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          processedImage.src = url;
-          console.log("Redo action performed");
-        } else {
-          const error = await response.json();
-          console.error("Error redoing:", error.error);
-          alert("Failed to redo: " + error.error);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred while redoing");
+      // Add event listeners with debouncing
+      brightnessSlider.addEventListener("input", debouncedAdjustments);
+      contrastSlider.addEventListener("input", debouncedAdjustments);
+      sharpeningSlider.addEventListener("input", debouncedAdjustments);
+      saturationSlider.addEventListener("input", debouncedAdjustments);
+      hueSlider.addEventListener("input", debouncedAdjustments);
+      valueSlider.addEventListener("input", debouncedAdjustments);
+
+      // Hapus canvas detection, ganti dengan img
+      const detectionImage = document.getElementById("detectionImage");
+      const detectionPlaceholder = document.getElementById(
+        "detectionPlaceholder"
+      );
+      const detectFaceBtn = document.getElementById("detectFaceBtn");
+      const clearDetectionBtn = document.getElementById("clearDetectionBtn");
+
+      // Helper: tampilkan hasil deteksi pada card gambar
+      function showDetectionImage(imageBlob) {
+        const url = URL.createObjectURL(imageBlob);
+        detectionImage.src = url;
+        detectionImage.classList.remove("hidden");
+        detectionPlaceholder.classList.add("hidden");
+        // Revoke URL after image loads to free memory
+        detectionImage.onload = () => URL.revokeObjectURL(url);
       }
-    });
 
-    resetBtn.addEventListener("click", async () => {
-      try {
-        const response = await fetch("/reset_image", {
-          method: "GET",
-        });
-
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          processedImage.src = url;
-
-          // Reset sliders to default values
-          brightnessSlider.value = 0;
-          contrastSlider.value = 100;
-          sharpeningSlider.value = 0;
-          saturationSlider.value = 100;
-          hueSlider.value = 0;
-          valueSlider.value = 100;
-
-          brightnessValue.textContent = "0";
-          contrastValue.textContent = "100";
-          sharpeningValue.textContent = "0";
-          saturationValue.textContent = "100";
-          hueValue.textContent = "0";
-          valueValue.textContent = "100";
-
-          console.log("Image reset to original");
-        } else {
-          const error = await response.json();
-          console.error("Error resetting image:", error.error);
-          alert("Failed to reset image: " + error.error);
+      detectFaceBtn.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/detect_face", { method: "GET" });
+          if (response.ok) {
+            const blob = await response.blob();
+            showDetectionImage(blob);
+          } else {
+            const error = await response.json();
+            alert("Gagal deteksi wajah: " + error.error);
+          }
+        } catch (e) {
+          alert("Terjadi kesalahan saat deteksi wajah");
         }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred while resetting the image");
-      }
-    });
+      });
 
-    saveExcelBtn.addEventListener("click", async () => {
-      try {
-        const response = await fetch("/save_edited_pixels_excel", {
-          method: "GET",
-        });
-
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "edited_pixels.xlsx";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          console.log("Excel file downloaded");
-        } else {
-          const error = await response.json();
-          console.error("Error saving to Excel:", error.error);
-          alert("Failed to save to Excel: " + error.error);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred while saving to Excel");
-      }
-    });
-
-    saveTextBtn.addEventListener("click", async () => {
-      try {
-        const response = await fetch("/save_edited_pixels_text", {
-          method: "GET",
-        });
-
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "edited_pixels.txt";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          console.log("Text file downloaded");
-        } else {
-          const error = await response.json();
-          console.error("Error saving to text:", error.error);
-          alert("Failed to save to text: " + error.error);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred while saving to text");
-      }
-    });
-
-    saveImageBtn.addEventListener("click", async () => {
-      try {
-        const response = await fetch("/save_image", {
-          method: "GET",
-        });
-
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "processed_image.png";
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          console.log("Image downloaded");
-        } else {
-          const error = await response.json();
-          console.error("Error saving image:", error.error);
-          alert("Failed to save image: " + error.error);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("An error occurred while saving the image");
-      }
-    });
-
-    // Apply image adjustments
-    async function applyAdjustments() {
-      const adjustments = {
-        brightness: parseInt(brightnessSlider.value),
-        contrast: parseInt(contrastSlider.value),
-        sharpening: parseInt(sharpeningSlider.value),
-        saturation: parseInt(saturationSlider.value),
-        hue_shift: parseInt(hueSlider.value),
-        value_scale: parseInt(valueSlider.value),
-      };
-
-      try {
-        const response = await fetch("/adjust_image", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(adjustments),
-        });
-
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          processedImage.src = url;
-        } else {
-          const error = await response.json();
-          console.error("Error adjusting image:", error.error);
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    }
-
-    // Debounce function to limit API calls during slider adjustments
-    function debounce(func, wait) {
-      let timeout;
-      return function () {
-        const context = this;
-        const args = arguments;
-        clearTimeout(timeout);
-        timeout = setTimeout(() => {
-          func.apply(context, args);
-        }, wait);
-      };
-    }
-
-    // Apply debouncing to slider adjustments
-    const debouncedAdjustments = debounce(applyAdjustments, 300);
-
-    // Add event listeners with debouncing
-    brightnessSlider.addEventListener("input", debouncedAdjustments);
-    contrastSlider.addEventListener("input", debouncedAdjustments);
-    sharpeningSlider.addEventListener("input", debouncedAdjustments);
-    saturationSlider.addEventListener("input", debouncedAdjustments);
-    hueSlider.addEventListener("input", debouncedAdjustments);
-    valueSlider.addEventListener("input", debouncedAdjustments);
-
-    const detectionCanvas = document.getElementById("detectionCanvas");
-    const detectFaceBtn = document.getElementById("detectFaceBtn");
-
-    // Helper: tampilkan hasil deteksi pada canvas, dengan scaling proporsional agar tidak melebihi card
-    function showDetectionOnCanvas(imageBlob) {
-      const url = URL.createObjectURL(imageBlob);
-      const img = new window.Image();
-      img.onload = function () {
-        // Ukuran maksimal card (perbesar maxHeight agar gambar lebih besar)
-        const maxWidth = detectionCanvas.parentElement.offsetWidth || 700;
-        const maxHeight = 500; // sebelumnya 350
-        let drawWidth = img.width;
-        let drawHeight = img.height;
-        const scale = Math.min(
-          maxWidth / img.width,
-          maxHeight / img.height,
-          1
-        );
-        if (scale < 1) {
-          drawWidth = img.width * scale;
-          drawHeight = img.height * scale;
-        }
-        detectionCanvas.width = drawWidth;
-        detectionCanvas.height = drawHeight;
-        detectionCanvas.style.width = drawWidth + "px";
-        detectionCanvas.style.height = drawHeight + "px";
-        const ctx = detectionCanvas.getContext("2d");
-        ctx.clearRect(0, 0, detectionCanvas.width, detectionCanvas.height);
-        ctx.drawImage(img, 0, 0, drawWidth, drawHeight);
-        URL.revokeObjectURL(url);
-      };
-      img.src = url;
-    }
-
-    detectFaceBtn.addEventListener("click", async () => {
-      try {
-        const response = await fetch("/detect_face", { method: "GET" });
-        if (response.ok) {
-          const blob = await response.blob();
-          showDetectionOnCanvas(blob);
-        } else {
-          const error = await response.json();
-          alert("Gagal deteksi wajah: " + error.error);
-        }
-      } catch (e) {
-        alert("Terjadi kesalahan saat deteksi wajah");
-      }
-    });
-  </script>
-</body>
-
+      clearDetectionBtn.addEventListener("click", () => {
+        detectionImage.src = "";
+        detectionImage.classList.add("hidden");
+        detectionPlaceholder.classList.remove("hidden");
+      });
+    </script>
+  </body>
 </html>
