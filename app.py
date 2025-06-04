@@ -230,7 +230,12 @@ def adjust_image():
     image = cv2.convertScaleAbs(image, alpha=contrast, beta=brightness)
 
     if sharpening > 0:
-        kernel = np.array([[-1, -1, -1], [-1, 9 + sharpening, -1], [-1, -1, -1]], dtype=np.float32)
+        # Normalize sharpening value: 0 (no sharpen) to 100 (very sharp)
+        # Kernel center: 9 + (sharpening / 10), so 0 -> 9, 100 -> 19
+        kernel_strength = 9 + (sharpening / 10.0)
+        kernel = np.array([[-1, -1, -1], 
+                           [-1, kernel_strength, -1], 
+                           [-1, -1, -1]], dtype=np.float32)
         image = cv2.filter2D(image, -1, kernel)
 
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV).astype(np.float32)
@@ -354,6 +359,22 @@ def save_edited_pixels_text():
         as_attachment=True,
         download_name='edited_pixels.txt'
     )
+
+@app.route('/detect_face', methods=['GET'])
+def detect_face():
+    global filtered_image
+    if filtered_image is None:
+        return jsonify({'error': 'No image available'}), 400
+
+    # Load haarcascade for face
+    cascade_path = os.path.join(os.path.dirname(__file__), "haarcascade_frontalface_default.xml")
+    face_cascade = cv2.CascadeClassifier(cascade_path)
+    img = filtered_image.copy()
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray, 1.1, 4)
+    for (x, y, w, h) in faces:
+        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+    return save_image_to_response(img)
 
 if __name__ == '__main__':
     os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
