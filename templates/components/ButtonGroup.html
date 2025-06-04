@@ -1,20 +1,29 @@
-<div class="flex flex-wrap justify-center gap-4 mt-8">
-  <button
-    id="applyFiltersButton"
-    class="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white px-6 py-2 rounded-lg transition-colors"
-  >
-    Terapkan Filter
-  </button>
-  <button
-    id="detectFacesButton"
-    class="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white px-6 py-2 rounded-lg transition-colors"
-  >
-    Deteksi Wajah
-  </button>
-  <button
-    id="downloadButton"
-    class="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white px-6 py-2 rounded-lg transition-colors hidden"
-  >
-    Unduh Hasil
-  </button>
+<div class="flex flex-col gap-4 p-4 bg-gray-900/50 rounded-xl backdrop-blur-sm">
+    <div class="flex items-center gap-2 text-sm">
+        <span class="text-gray-400">Save as:</span>
+        <button
+            class="bg-orange-600/20 hover:bg-orange-600/40 text-orange-500 px-3 py-1 rounded transition-colors"
+        >
+            .xlsx
+        </button>
+        <button
+            class="bg-gray-600/20 hover:bg-gray-600/40 text-gray-300 px-3 py-1 rounded transition-colors"
+        >
+            .txt
+        </button>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center gap-2">
+        <button
+            class="bg-orange-600/20 hover:bg-orange-600/40 text-orange-500 px-3 py-1 rounded transition-colors"
+        >
+            Undo
+        </button>
+        <button
+            class="bg-orange-600/20 hover:bg-orange-600/40 text-orange-500 px-3 py-1 rounded transition-colors"
+        >
+            Redo
+        </button>
+    </div>
 </div>
