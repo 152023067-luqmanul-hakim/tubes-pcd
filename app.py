@@ -17,15 +17,15 @@ app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'bmp'}
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload size
 
 # Update path untuk model
-# HAAR_CASCADE_PATH = os.path.join(app.root_path, 'static', 'models', 'haarcascade_frontalface_default.xml')
-# SHAPE_PREDICTOR_PATH = os.path.join(app.root_path, 'static', 'models', 'shape_predictor_68_face_landmarks.dat')
+HAAR_CASCADE_PATH = os.path.join(app.root_path, 'static', 'models', 'haarcascade_frontalface_default.xml')
+SHAPE_PREDICTOR_PATH = os.path.join(app.root_path, 'static', 'models', 'shape_predictor_68_face_landmarks.dat')
 # Inisialisasi Face Landmarker
 FACE_LANDMARKER_PATH = os.path.join(app.root_path, 'static', 'models', 'face_landmarker.task')
 
 # Initialize face detection models
-# haar_cascade = cv2.CascadeClassifier(HAAR_CASCADE_PATH)
-# shape_predictor = dlib.shape_predictor(SHAPE_PREDICTOR_PATH)
-# dlib_detector = dlib.get_frontal_face_detector()
+haar_cascade = cv2.CascadeClassifier(HAAR_CASCADE_PATH)
+shape_predictor = dlib.shape_predictor(SHAPE_PREDICTOR_PATH)
+dlib_detector = dlib.get_frontal_face_detector()
 
 BaseOptions = mp.tasks.BaseOptions
 FaceLandmarker = mp.tasks.vision.FaceLandmarker
