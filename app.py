@@ -535,7 +535,7 @@ def redo():
 
 @app.route('/adjust_image', methods=['POST'])
 def adjust_image():
-    global filtered_image
+    global filtered_image, history, redo_stack
     
     if filtered_image is None:
         return jsonify({'error': 'No image available'}), 400
@@ -569,6 +569,9 @@ def adjust_image():
     hsv[..., 2] = np.clip(hsv[..., 2], 0, 255)
 
     image = cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
+    filtered_image = image.copy()
+    history.append(filtered_image.copy())
+    redo_stack = []
     
     return save_image_to_response(image)
 
