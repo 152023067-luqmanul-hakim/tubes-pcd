@@ -313,7 +313,16 @@ def detect_expression():
 
     try:
         # Baca dan konversi gambar
-        image_data = file.read()
+        # Gunakan filtered_image jika ada, jika tidak baca dari file upload
+        global filtered_image
+        if filtered_image is not None:
+            image = filtered_image.copy()
+            # Encode image ke buffer seperti file upload
+            _, buffer = cv2.imencode('.jpg', image)
+            image_data = buffer.tobytes()
+        else:
+            image_data = file.read()
+            
         image = cv2.imdecode(np.frombuffer(image_data, np.uint8), cv2.IMREAD_COLOR)
         image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         
@@ -535,7 +544,7 @@ def redo():
 
 @app.route('/adjust_image', methods=['POST'])
 def adjust_image():
-    global filtered_image, history, redo_stack
+    global filtered_image
     
     if filtered_image is None:
         return jsonify({'error': 'No image available'}), 400
@@ -569,11 +578,51 @@ def adjust_image():
     hsv[..., 2] = np.clip(hsv[..., 2], 0, 255)
 
     image = cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
-    filtered_image = image.copy()
-    history.append(filtered_image.copy())
-    redo_stack = []
     
     return save_image_to_response(image)
+
+@app.route('/save_adjust', methods=['POST'])
+def save_adjust():
+    global filtered_image, history, redo_stack
+    
+    if filtered_image is None:
+        return jsonify({'error': 'No image available'}), 400
+    
+    data = request.json
+    brightness = data.get('brightness', 0)
+    contrast = data.get('contrast', 100) / 100.0
+    sharpening = data.get('sharpening', 0)
+    saturation = data.get('saturation', 100) / 100.0
+    hue_shift = data.get('hue_shift', 0)
+    value_scale = data.get('value_scale', 100) / 100.0
+
+    # Create adjusted image
+    image = filtered_image.copy()
+    image = cv2.convertScaleAbs(image, alpha=contrast, beta=brightness)
+
+    if sharpening > 0:
+        kernel_strength = 9 + (sharpening / 10.0)
+        kernel = np.array([[-1, -1, -1], 
+                          [-1, kernel_strength, -1], 
+                          [-1, -1, -1]], dtype=np.float32)
+        image = cv2.filter2D(image, -1, kernel)
+
+    hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV).astype(np.float32)
+    hsv[..., 1] *= saturation
+    hsv[..., 0] = (hsv[..., 0] + hue_shift) % 180
+    hsv[..., 2] *= value_scale
+    hsv[..., 0] = np.clip(hsv[..., 0], 0, 179)
+    hsv[..., 1] = np.clip(hsv[..., 1], 0, 255)
+    hsv[..., 2] = np.clip(hsv[..., 2], 0, 255)
+
+    image = cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2BGR)
+    
+    # Update filtered_image and history
+    filtered_image = image.copy()
+    history.append(filtered_image.copy())
+    redo_stack = []  # Clear redo stack when new change is made
+    
+    return save_image_to_response(filtered_image)
 
 @app.route('/save_original_pixels_excel', methods=['GET'])
 def save_original_pixels_excel():
