@@ -225,6 +225,12 @@
                   >
                     Histogram
                   </button>
+                  <button
+                    id="showHistogramBtn"
+                    class="bg-orange-600/80 hover:bg-orange-600 text-white px-4 py-2.5 rounded-lg transition-colors text-sm font-medium backdrop-blur-sm"
+                  >
+                    Show Histogram
+                  </button>
                 </div>
               </div>
 
@@ -480,11 +486,7 @@
             />
           </div>
           <div class="mt-4 flex justify-center">
-            <button
-              class="bg-orange-600 hover:bg-orange-700 text-white px-6 py-2 rounded-lg transition-colors"
-            >
-              Save Histogram
-            </button>
+           
           </div>
         </div>
       </div>
@@ -510,6 +512,7 @@
       const binerBtn = document.getElementById("binerBtn");
       const gaussianBtn = document.getElementById("gaussianBtn");
       const histogramBtn = document.getElementById("histogramBtn");
+      const showHistogramBtn = document.getElementById("showHistogramBtn");
 
       // Adjustment sliders
       const brightnessSlider = document.getElementById("brightness");
@@ -762,26 +765,32 @@
             const url = URL.createObjectURL(blob);
             processedImage.src = url;
             console.log("Histogram equalization applied");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("An error occurred while applying histogram equalization");
+        }
+      });
 
-            // Show histogram in modal instead of new window
-            const histResponse = await fetch("/show_histogram", {
-              method: "GET",
-            });
+      showHistogramBtn.addEventListener("click", async () => {
+        try {
+          const histResponse = await fetch("/show_histogram", {
+            method: "GET",
+          });
 
-            if (histResponse.ok) {
-              const histBlob = await histResponse.blob();
-              const histUrl = URL.createObjectURL(histBlob);
+          if (histResponse.ok) {
+            const histBlob = await histResponse.blob();
+            const histUrl = URL.createObjectURL(histBlob);
 
-              // Set the image source and show modal
-              const histogramImage = document.getElementById("histogramImage");
-              histogramImage.src = histUrl;
+            // Set the image source and show modal
+            const histogramImage = document.getElementById("histogramImage");
+            histogramImage.src = histUrl;
 
-              const histogramModal = document.getElementById("histogramModal");
-              histogramModal.classList.remove("hidden");
-              setTimeout(() => {
-                histogramModal.classList.remove("opacity-0");
-              }, 20);
-            }
+            const histogramModal = document.getElementById("histogramModal");
+            histogramModal.classList.remove("hidden");
+            setTimeout(() => {
+              histogramModal.classList.remove("opacity-0");
+            }, 20);
           } else {
             const error = await response.json();
             console.error("Error applying histogram:", error.error);
